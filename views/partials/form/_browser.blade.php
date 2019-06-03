@@ -20,7 +20,7 @@
         :wide="{{ json_encode($wide) }}"
         endpoint="{{ $endpoint }}"
         :endpoints="{{ json_encode($endpoints) }}"
-        modal-title="Attach {{ strtolower($label) }}"
+        modal-title="{{__('fields.attach')=='fields.attach'?'Attach':__('fields.attach')}} {{ strtolower($label) }}"
         :draggable="{{ json_encode($sortable) }}"
     >{{ $note }}</a17-browserfield>
 </a17-inputframe>
