@@ -1,27 +1,33 @@
 @extends('twill::auth.layout', [
     'route' => route('admin.login'),
-    'screenTitle' => 'Login'
+    'screenTitle' => __('auth.login')=='auth.login'?'Login':__('auth.login')
 ])
 
 @section('form')
     <fieldset class="login__fieldset">
         <label class="login__label" for="email">Email</label>
-        <input type="email" name="email" id="email" class="login__input" required autofocus tabindex="1" value="{{ old('email') }}" />
+        <input type="email" name="email" id="email" class="login__input" required autofocus tabindex="1"
+               value="{{ old('email') }}"/>
     </fieldset>
 
     <fieldset class="login__fieldset">
-        <label class="login__label" for="password">Password</label>
-        <a href="{{ route('admin.password.reset.link') }}" class="login__help f--small" tabindex="5"><span>Forgot password</span></a>
-        <input type="password" name="password" id="password" class="login__input" required tabindex="2" />
+        <label class="login__label"
+               for="password">{{__('auth.password')=='auth.password'?'Password':__('auth.password')}}</label>
+        <a href="{{ route('admin.password.reset.link') }}" class="login__help f--small"
+           tabindex="5"><span>{{__('auth.forgotpassword')=='auth.forgotpassword'?'Forgot password':__('auth.forgotpassword')}}</span></a>
+        <input type="password" name="password" id="password" class="login__input" required tabindex="2"/>
     </fieldset>
 
-    <input class="login__button" type="submit" value="Login" tabindex="3">
+    <input class="login__button" type="submit" value="{{__('auth.login')=='auth.login'?'Login':__('auth.login')}}"
+           tabindex="3">
 
     @if (config('twill.enabled.google-login'))
         <a href="#" class="login__google" tabindex="4">
             <span symbol="more-dots" class="icon icon--google-sign-in">
-                <svg title="Google login" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                     width="23px" height="24px" viewBox="0 0 23 24" style="enable-background:new 0 0 23 24;" xml:space="preserve">
+                <svg title="Google login" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                     width="23px" height="24px" viewBox="0 0 23 24" style="enable-background:new 0 0 23 24;"
+                     xml:space="preserve">
                     <path fill="#4285F4" d="M21.789,10.133H12V14h5.551c-0.243,1.312-0.983,2.61-2.095,3.355l3.393,2.635
                         c1.985-1.828,3.131-4.52,3.131-7.718C21.98,11.527,21.913,10.821,21.789,10.133z"/>
                     <path fill="#34A853" d="M15.456,17.355c-0.94,0.63-2.143,1.002-3.556,1.002c-2.735,0-5.05-1.847-5.875-4.329l-3.508,2.72
@@ -32,7 +38,7 @@
                         c1.542,0,2.926,0.53,4.014,1.57l3.012-3.012C17.107,2.574,14.73,1.533,11.9,1.533z"/>
                 </svg>
             </span>
-            <span>Sign in with Google</span>
+            <span>{{__('auth.googlelogin')=='auth.googlelogin'?'Sign in with Google':__('auth.googlelogin')}}</span>
         </a>
     @endif
 @stop
