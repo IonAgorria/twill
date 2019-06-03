@@ -454,20 +454,20 @@ abstract class ModuleController extends Controller
         if ($this->repository->restore(request('id'))) {
             $this->fireEvent();
             activity()->performedOn($this->repository->getById(request('id')))->log('restored');
-            return $this->respondWithSuccess($this->modelTitle . ' restored!');
+            return $this->respondWithSuccess($this->modelTitle . (__('navigation.restored') == 'navigation.restored' ? ' restored!' : __('navigation.restored')));
         }
 
-        return $this->respondWithError($this->modelTitle . ' was not restored. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . (__('navigation.notrestored') == 'navigation.notrestored' ? ' was not restored. Something wrong happened!' : __('navigation.notrestored')));
     }
 
     public function bulkRestore()
     {
         if ($this->repository->bulkRestore(explode(',', request('ids')))) {
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items restored!');
+            return $this->respondWithSuccess($this->modelTitle . (__('navigation.itrestored') == 'navigation.itrestored' ? ' items restored!' : __('navigation.itrestored')));
         }
 
-        return $this->respondWithError($this->modelTitle . ' items were not restored. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . (__('navigation.itnotrestored') == 'navigation.itnotrestored' ? ' items were not restored. Something wrong happened!' : __('navigation.itnotrestored')));
     }
 
     public function feature()
