@@ -50,7 +50,7 @@
 
                     @if($create)
                         <div slot="additional-actions">
-                            <a17-button variant="validate" size="small" v-on:click="create">Add new</a17-button>
+                            <a17-button variant="validate" size="small" v-on:click="create">{{__('navigation.addnew')=='navigation.addnew'?'Add new': __('navigation.addnew')}}</a17-button>
                         </div>
                     @endif
                 </a17-filter>
@@ -65,13 +65,13 @@
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :max-depth="{{ $nestedDepth ?? '1' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="There is no item here yet.">
+                empty-message={{__('navigation.noitem')=='navigation.noitem'?'There is no item here yet.': __('navigation.noitem')}}>
             </a17-nested-datatable>
         @else
             <a17-datatable
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="There is no item here yet.">
+                empty-message={{__('navigation.noitem')=='navigation.noitem'?'There is no item here yet.': __('navigation.noitem')}}>
             </a17-datatable>
         @endif
 
@@ -88,9 +88,9 @@
             </a17-modal-create>
         @endif
 
-        <a17-dialog ref="warningDeleteRow" modal-title="Delete item" confirm-label="Delete">
-            <p class="modal--tiny-title"><strong>Move to trash</strong></p>
-            <p>The item won't be deleted but moved to trash.</p>
+        <a17-dialog ref="warningDeleteRow" modal-title="{{__('navigation.deleteitem')=='navigation.deleteitem'?'Delete item': __('navigation.deleteitem')}}" confirm-label="Delete">
+            <p class="modal--tiny-title"><strong>{{__('navigation.totrash')=='navigation.totrash'?'Move to trash': __('navigation.totrash')}}</strong></p>
+            <p>{{__('navigation.softdelinfo')=='navigation.softdelinfo'?'The item won\'t be deleted but moved to trash.': __('navigation.softdelinfo')}}</p>
         </a17-dialog>
     </div>
 @stop
@@ -138,3 +138,4 @@
     <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
     <script src="{{ mix('/assets/admin/js/main-listing.js') }}"></script>
 @endpush
+
