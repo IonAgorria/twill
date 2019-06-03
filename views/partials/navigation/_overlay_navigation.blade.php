@@ -17,12 +17,12 @@
                 </div>
                 <div class="headerMobile__list">
                     @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
-                        <a href="#" data-closenav-btn data-medialib-btn>Media Library</a><br />
+                        <a href="#" data-closenav-btn data-medialib-btn>{{__('navigation.media_library')=='navigation.media_library'?'Media library':__('navigation.media_library')}}</a><br />
                     @endif
                     @if(isset($currentUser))
-                        <a href="{{ route('admin.users.index') }}">CMS Users</a><br />
-                        <a href="{{ route('admin.users.edit', $currentUser->id) }}">Settings</a><br />
-                        <a href="{{ route('admin.logout') }}">Logout</a>
+                        <a href="{{ route('admin.users.index') }}">{{__('navigation.cmsusers')=='navigation.cmsusers'?'CMS Users':__('navigation.cmsusers')}}</a><br />
+                        <a href="{{ route('admin.users.edit', $currentUser->id) }}">{{__('navigation.settings')=='navigation.cmsusers'?'Settings':__('navigation.settings')}}</a><br />
+                        <a href="{{ route('admin.logout') }}">{{__('navigation.logout')=='navigation.logout'?'Logout':__('navigation.logout')}}</a>
                     @endif
                 </div>
             </div>
@@ -41,7 +41,7 @@
             <span class="ham__icon">
                 <span class="ham__line"></span>
             </span>
-            <span class="icon icon--close_modal"><svg><title>Close menu</title><use xlink:href="#close_modal"></use></svg></span>
+            <span class="icon icon--close_modal"><svg><title>{{__('navigation.closemenu')=='navigation.closemenu'?'Close menu':__('navigation.closemenu')}}</title><use xlink:href="#close_modal"></use></svg></span>
         </span>
     </button>
 @endif
