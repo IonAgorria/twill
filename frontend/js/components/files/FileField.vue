@@ -34,7 +34,7 @@
     props: {
       addLabelValue: {
         type: String,
-        default: 'Add'
+        default: 'Add '
       },
       type: {
         type: String,
@@ -100,7 +100,7 @@
         }
       },
       addLabel: function () {
-        return this.addLabelValue + this.itemLabel
+        return this.addLabelValue + ' ' +this.itemLabel
       },
       ...mapState({
         selectedFiles: state => state.mediaLibrary.selected
