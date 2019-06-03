@@ -8,11 +8,13 @@
     $itemLabel = $itemLabel ?? strtolower($label);
     $sortable = $sortable ?? true;
     $wide = $wide ?? false;
+    $addLabelValue = $addLabelValue ?? 'Add';
 @endphp
 
 <a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}">
     <a17-browserfield
         @include('twill::partials.form.utils._field_name')
+        add-label-value="{{$addLabelValue}}"
         item-label="{{ $itemLabel }}"
         :max="{{ $max }}"
         :wide="{{ json_encode($wide) }}"
