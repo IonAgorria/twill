@@ -5,7 +5,8 @@
         <a17-browseritem v-for="(item, index) in items" :key="item.endpointType + '_' + item.id" class="item__content"
                          :name="`${name}_${item.id}`" :draggable="draggable" :item="item" @delete="deleteItem(index)"
                          :max="max"
-                         :showType="endpoints.length > 0" />
+                         :showType="endpoints.length > 0"
+        />
       </draggable>
     </table>
     <div class="browserField__trigger" v-if="remainingItems">
@@ -17,8 +18,8 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
-  import { BROWSER } from '@/store/mutations'
+  import {mapState, mapGetters} from 'vuex'
+  import {BROWSER} from '@/store/mutations'
 
   import Browseritem from './BrowserItem.vue'
   import draggableMixin from '@/mixins/draggable'
@@ -32,6 +33,10 @@
     },
     mixins: [draggableMixin],
     props: {
+      addLabelValue: {
+        type: String,
+        default: 'Add'
+      },
       name: {
         type: String,
         required: true
@@ -75,7 +80,7 @@
         return this.max - this.items.length
       },
       addLabel: function () {
-        return 'Add ' + this.itemLabel
+        return this.addLabelValue + ' ' + this.itemLabel
       },
       browserTitle: function () {
         return this.modalTitle !== '' ? this.modalTitle : this.addLabel
@@ -194,3 +199,4 @@
     border-spacing: 0;
   }
 </style>
+
