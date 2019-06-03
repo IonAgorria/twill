@@ -219,7 +219,7 @@ abstract class ModuleController extends Controller
         Session::put($this->moduleName . '_retain', true);
 
         if ($this->getIndexOption('editInModal')) {
-            return $this->respondWithSuccess('Content saved. All good!');
+            return $this->respondWithSuccess(__('navigation.contentsaved') == 'navigation.contentsaved' ? 'Content saved. All good!' : __('navigation.contentsaved'));
         }
 
         return $this->respondWithRedirect(moduleRoute(
@@ -246,8 +246,8 @@ abstract class ModuleController extends Controller
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
-            ? response()->json($this->modalFormData($submodule ?? $id))
-            : redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
+                ? response()->json($this->modalFormData($submodule ?? $id))
+                : redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
         $this->setBackLink();
@@ -298,7 +298,7 @@ abstract class ModuleController extends Controller
                         ['openCreate' => true]
                     ));
                 } elseif ($input['cmsSaveType'] === 'restore') {
-                    session()->flash('status', "Revision restored.");
+                    session()->flash('status', __('navigation.revisionrestored') == 'navigation.revisionrestored' ? "Revision restored." : __('navigation.revisionrestored'));
 
                     return $this->respondWithRedirect(moduleRoute(
                         $this->moduleName,
@@ -311,13 +311,13 @@ abstract class ModuleController extends Controller
 
             if ($this->moduleHas('revisions')) {
                 return response()->json([
-                    'message' => 'Content saved. All good!',
+                    'message' => __('navigation.contentsaved') == 'navigation.contentsaved' ? 'Content saved. All good!' : __('navigation.contentsaved'),
                     'variant' => FlashLevel::SUCCESS,
                     'revisions' => $item->revisionsArray(),
                 ]);
             }
 
-            return $this->respondWithSuccess('Content saved. All good!');
+            return $this->respondWithSuccess(__('navigation.contentsaved') == 'navigation.contentsaved' ? 'Content saved. All good!' : __('navigation.contentsaved'));
         }
     }
 
@@ -366,9 +366,17 @@ abstract class ModuleController extends Controller
         $revision = $item->revisions()->where('id', request('revisionId'))->first();
         $date = $revision->created_at->toDayDateTimeString();
 
-        session()->flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
+        session()->flash('restoreMessage', $this->getRestoreMessage($revision, $date));
 
         return view($view, $this->form($id, $item));
+    }
+
+    public function getRestoreMessage($revision, $date)
+    {
+        $olderRev = __('navigation.olderrev') == 'navigation.olderrev' ? 'You are currently editing an older revision of this content (saved by ' : __('navigation.olderrev');
+        $on = __('navigation.on') == 'navigation.on' ? ' on ' : __('navigation.on');
+        $makeChanges = __('navigation.makechanges') == 'navigation.makechanges' ? '). Make changes if needed and click restore to save a new revision.' : __('navigation.makechanges');
+        return $olderRev . "" . $revision->byUser . "" . $on . "" . $date . "" . $makeChanges;
     }
 
     public function publish()
@@ -380,13 +388,13 @@ abstract class ModuleController extends Controller
                 activity()->performedOn(
                     $this->repository->getById(request('id'))
                 )->log(
-                    (request('active') ? 'un' : '') . 'published'
+                    (request('active') ? (__('navigation.un') == 'navigation.un' ? 'un' : __('navigation.un')) : '') . (__('navigation.publishedit') == 'navigation.publishedit' ? 'published!' : __('navigation.publishedit'))
                 );
 
                 $this->fireEvent();
 
                 return $this->respondWithSuccess(
-                    $this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'published!'
+                    $this->modelTitle . ' ' . (request('active') ? (__('navigation.un') == 'navigation.un' ? 'un' : __('navigation.un')) : '') . (__('navigation.publishedit') == 'navigation.publishedit' ? 'published!' : __('navigation.publishedit'))
                 );
             }
         } catch (\Exception $e) {
@@ -394,7 +402,7 @@ abstract class ModuleController extends Controller
         }
 
         return $this->respondWithError(
-            $this->modelTitle . ' was not published. Something wrong happened!'
+            $this->modelTitle . (__('navigation.notpublished') == 'navigation.notpublished' ? ' was not published. Something wrong happened!' : __('navigation.notpublished'))
         );
     }
 
@@ -407,7 +415,7 @@ abstract class ModuleController extends Controller
                 $this->fireEvent();
 
                 return $this->respondWithSuccess(
-                    $this->modelTitle . ' items ' . (request('publish') ? '' : 'un') . 'published!'
+                    $this->modelTitle . (__('navigation.items') == 'navigation.items' ? 'items' : __('navigation.items')) . (request('publish') ? '' : __('navigation.un') == 'navigation.un' ? 'un' : __('navigation.un')) . (__('navigation.publishedit') == 'navigation.publishedit' ? 'published!' : __('navigation.publishedit'))
                 );
             }
         } catch (\Exception $e) {
@@ -415,7 +423,7 @@ abstract class ModuleController extends Controller
         }
 
         return $this->respondWithError(
-            $this->modelTitle . ' items were not published. Something wrong happened!'
+            $this->modelTitle . (__('navigation.itnotpublished') == 'navigation.itnotpublished' ? ' items were not published. Something wrong happened!' : __('navigation.itnotpublished'))
         );
     }
 
@@ -425,20 +433,20 @@ abstract class ModuleController extends Controller
         if ($this->repository->delete($submoduleId ?? $id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('deleted');
-            return $this->respondWithSuccess($this->modelTitle . ' moved to trash!');
+            return $this->respondWithSuccess($this->modelTitle . (__('navigation.movedtotrash') == 'navigation.movedtotrash' ? ' moved to trash!' : __('navigation.movedtotrash')));
         }
 
-        return $this->respondWithError($this->modelTitle . ' was not moved to trash. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . (__('navigation.notmovedtotrash') == 'navigation.notmovedtotrash' ? ' was not moved to trash. Something wrong happened!' : __('navigation.notmovedtotrash')));
     }
 
     public function bulkDelete()
     {
         if ($this->repository->bulkDelete(explode(',', request('ids')))) {
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items moved to trash!');
+            return $this->respondWithSuccess($this->modelTitle . (__('navigation.itmovedtotrash') == 'navigation.itmovedtotrash' ? ' items moved to trash!' : __('navigation.itmovedtotrash')));
         }
 
-        return $this->respondWithError($this->modelTitle . ' items were not moved to trash. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . (__('navigation.itnotmovedtotrash') == 'navigation.itnotmovedtotrash' ? ' items were not moved to trash. Something wrong happened!' : __('navigation.itnotmovedtotrash')));
     }
 
     public function restore()
@@ -531,16 +539,16 @@ abstract class ModuleController extends Controller
         $items = $this->getIndexItems($scopes);
 
         $data = [
-            'tableData' => $this->getIndexTableData($items),
-            'tableColumns' => $this->getIndexTableColumns($items),
-            'tableMainFilters' => $this->getIndexTableMainFilters($items),
-            'filters' => json_decode($this->request->get('filter'), true) ?? [],
-            'hiddenFilters' => array_keys(array_except($this->filters, array_keys($this->defaultFilters))),
-            'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
-            'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
-            'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
-            'defaultOffset' => $this->perPage,
-        ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
+                'tableData' => $this->getIndexTableData($items),
+                'tableColumns' => $this->getIndexTableColumns($items),
+                'tableMainFilters' => $this->getIndexTableMainFilters($items),
+                'filters' => json_decode($this->request->get('filter'), true) ?? [],
+                'hiddenFilters' => array_keys(array_except($this->filters, array_keys($this->defaultFilters))),
+                'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
+                'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
+                'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
+                'defaultOffset' => $this->perPage,
+            ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
 
         $baseUrl = $this->getPermalinkBaseUrl();
 
@@ -609,24 +617,24 @@ abstract class ModuleController extends Controller
             $canEdit = $this->getIndexOption('edit');
 
             return array_replace([
-                'id' => $item->id,
-                'name' => $name,
-                'publish_start_date' => $item->publish_start_date,
-                'publish_end_date' => $item->publish_end_date,
-                'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
-                'delete' => ($canEdit && $itemCanDelete) ? $this->getModuleRoute($item->id, 'destroy') : null,
-            ] + ($this->getIndexOption('editInModal') ? [
-                'editInModal' => $this->getModuleRoute($item->id, 'edit'),
-                'updateUrl' => $this->getModuleRoute($item->id, 'update'),
-            ] : []) + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
-                'published' => $item->published,
-            ] : []) + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? [
-                'featured' => $item->{$this->featureField},
-            ] : []) + (($this->getIndexOption('restore') && $itemIsTrashed) ? [
-                'deleted' => true,
-            ] : []) + ($translated ? [
-                'languages' => $item->getActiveLanguages(),
-            ] : []) + $columnsData, $this->indexItemData($item));
+                    'id' => $item->id,
+                    'name' => $name,
+                    'publish_start_date' => $item->publish_start_date,
+                    'publish_end_date' => $item->publish_end_date,
+                    'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
+                    'delete' => ($canEdit && $itemCanDelete) ? $this->getModuleRoute($item->id, 'destroy') : null,
+                ] + ($this->getIndexOption('editInModal') ? [
+                    'editInModal' => $this->getModuleRoute($item->id, 'edit'),
+                    'updateUrl' => $this->getModuleRoute($item->id, 'update'),
+                ] : []) + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
+                    'published' => $item->published,
+                ] : []) + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? [
+                    'featured' => $item->{$this->featureField},
+                ] : []) + (($this->getIndexOption('restore') && $itemIsTrashed) ? [
+                    'deleted' => true,
+                ] : []) + ($translated ? [
+                    'languages' => $item->getActiveLanguages(),
+                ] : []) + $columnsData, $this->indexItemData($item));
         })->toArray();
     }
 
@@ -647,8 +655,8 @@ abstract class ModuleController extends Controller
                 $role = $variant ? $column['variant']['role'] : head(array_keys($item->mediasParams));
                 $crop = $variant ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams)));
                 $params = $variant && isset($column['variant']['params'])
-                ? $column['variant']['params']
-                : ['w' => 80, 'h' => 80, 'fit' => 'crop'];
+                    ? $column['variant']['params']
+                    : ['w' => 80, 'h' => 80, 'fit' => 'crop'];
 
                 return [
                     'thumbnail' => $item->cmsImage($role, $crop, $params),
@@ -662,8 +670,8 @@ abstract class ModuleController extends Controller
             $value = '<a href="';
             $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$item->id]);
             $value .= '">' . $nestedCount . " " . (strtolower($nestedCount > 1
-                ? str_plural($column['title'])
-                : str_singular($column['title']))) . '</a>';
+                    ? str_plural($column['title'])
+                    : str_singular($column['title']))) . '</a>';
         } else {
             $field = $column['field'];
             $value = $item->$field;
@@ -691,7 +699,7 @@ abstract class ModuleController extends Controller
         ) {
             array_push($tableColumns, [
                 'name' => 'thumbnail',
-                'label' => 'Thumbnail',
+                'label' => trans_choice('navigation.thumbnail', 1) == 'navigation.thumbnail' ? 'Thumbnail' : trans_choice('navigation.thumbnail', 1),
                 'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
                 'optional' => true,
                 'sortable' => false,
@@ -702,7 +710,7 @@ abstract class ModuleController extends Controller
         if ($this->getIndexOption('feature')) {
             array_push($tableColumns, [
                 'name' => 'featured',
-                'label' => 'Featured',
+                'label' => __('navigation.featured') == 'navigation.featured' ? 'Featured' : __('navigation.featured'),
                 'visible' => true,
                 'optional' => false,
                 'sortable' => false,
@@ -712,7 +720,7 @@ abstract class ModuleController extends Controller
         if ($this->getIndexOption('publish')) {
             array_push($tableColumns, [
                 'name' => 'published',
-                'label' => 'Published',
+                'label' => __('navigation.published') == 'navigation.published' ? 'Published' : __('navigation.published'),
                 'visible' => true,
                 'optional' => false,
                 'sortable' => false,
@@ -721,7 +729,7 @@ abstract class ModuleController extends Controller
 
         array_push($tableColumns, [
             'name' => 'name',
-            'label' => $this->indexColumns[$this->titleColumnKey]['title'] ?? 'Name',
+            'label' => __('navigation.title') == 'navigation.title' ? $this->indexColumns[$this->titleColumnKey]['title'] ?? 'Name' : __('navigation.title'),
             'visible' => true,
             'optional' => false,
             'sortable' => $this->getIndexOption('reorder') ? false : ($this->indexColumns[$this->titleColumnKey]['sort'] ?? false),
@@ -731,8 +739,8 @@ abstract class ModuleController extends Controller
 
         foreach ($this->indexColumns as $column) {
             $columnName = isset($column['relationship'])
-            ? $column['relationship'] . ucfirst($column['field'])
-            : (isset($column['nested']) ? $column['nested'] : $column['field']);
+                ? $column['relationship'] . ucfirst($column['field'])
+                : (isset($column['nested']) ? $column['nested'] : $column['field']);
 
             array_push($tableColumns, [
                 'name' => $columnName,
@@ -747,7 +755,7 @@ abstract class ModuleController extends Controller
         if ($this->moduleHas('translations')) {
             array_push($tableColumns, [
                 'name' => 'languages',
-                'label' => 'Languages',
+                'label' => __('navigation.languages') == 'navigation.languages' ? 'Languages' : __('navigation.languages'),
                 'visible' => $visibleColumns ? in_array('languages', $visibleColumns) : true,
                 'optional' => true,
                 'sortable' => false,
@@ -762,18 +770,18 @@ abstract class ModuleController extends Controller
         $statusFilters = [];
 
         $scope = ($this->submodule ? [
-            $this->getParentModuleForeignKey() => $this->submoduleParentId,
-        ] : []) + $scopes;
+                $this->getParentModuleForeignKey() => $this->submoduleParentId,
+            ] : []) + $scopes;
 
         array_push($statusFilters, [
-            'name' => 'All items',
+            'name' => __('navigation.allitems') == 'navigation.allitems' ? 'All items' : __('navigation.allitems'),
             'slug' => 'all',
             'number' => $this->repository->getCountByStatusSlug('all', $scope),
         ]);
 
         if ($this->moduleHas('revisions') && $this->getIndexOption('create')) {
             array_push($statusFilters, [
-                'name' => 'Mine',
+                'name' => __('navigation.mine') == 'navigation.mine' ? 'Mine' : __('navigation.mine'),
                 'slug' => 'mine',
                 'number' => $this->repository->getCountByStatusSlug('mine', $scope),
             ]);
@@ -781,11 +789,11 @@ abstract class ModuleController extends Controller
 
         if ($this->getIndexOption('publish')) {
             array_push($statusFilters, [
-                'name' => 'Published',
+                'name' => __('navigation.published') == 'navigation.published' ? 'Published' : __('navigation.published'),
                 'slug' => 'published',
                 'number' => $this->repository->getCountByStatusSlug('published', $scope),
             ], [
-                'name' => 'Draft',
+                'name' => __('navigation.draft') == 'navigation.draft' ? 'Draft' : __('navigation.draft'),
                 'slug' => 'draft',
                 'number' => $this->repository->getCountByStatusSlug('draft', $scope),
             ]);
@@ -793,7 +801,7 @@ abstract class ModuleController extends Controller
 
         if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [
-                'name' => 'Trash',
+                'name' => __('navigation.trash') == 'navigation.trash' ? 'Trash' : __('navigation.trash'),
                 'slug' => 'trash',
                 'number' => $this->repository->getCountByStatusSlug('trash', $scope),
             ]);
@@ -880,13 +888,13 @@ abstract class ModuleController extends Controller
             unset($columnsData[$this->titleColumnKey]);
 
             return [
-                'id' => $item->id,
-                'name' => $name,
-                'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
-                'endpointType' => $this->moduleName,
-            ] + $columnsData + ($withImage && !array_key_exists('thumbnail', $columnsData) ? [
-                'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
-            ] : []);
+                    'id' => $item->id,
+                    'name' => $name,
+                    'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
+                    'endpointType' => $this->moduleName,
+                ] + $columnsData + ($withImage && !array_key_exists('thumbnail', $columnsData) ? [
+                    'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
+                ] : []);
         })->toArray();
     }
 
@@ -985,25 +993,25 @@ abstract class ModuleController extends Controller
         $baseUrl = $item->urlWithoutSlug ?? $this->getPermalinkBaseUrl();
 
         $data = [
-            'item' => $item,
-            'moduleName' => $this->moduleName,
-            'routePrefix' => $this->routePrefix,
-            'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
-            'translate' => $this->moduleHas('translations'),
-            'permalink' => $this->getIndexOption('permalink'),
-            'form_fields' => $this->repository->getFormFields($item),
-            'baseUrl' => $baseUrl,
-            'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
-            'saveUrl' => $this->getModuleRoute($item->id, 'update'),
-            'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
-            'blockPreviewUrl' => route('admin.blocks.preview'),
-            'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
-        ] + (Route::has($previewRouteName) ? [
-            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
-        ] : [])
-             + (Route::has($restoreRouteName) ? [
-            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $item->id),
-        ] : []);
+                'item' => $item,
+                'moduleName' => $this->moduleName,
+                'routePrefix' => $this->routePrefix,
+                'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
+                'translate' => $this->moduleHas('translations'),
+                'permalink' => $this->getIndexOption('permalink'),
+                'form_fields' => $this->repository->getFormFields($item),
+                'baseUrl' => $baseUrl,
+                'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
+                'saveUrl' => $this->getModuleRoute($item->id, 'update'),
+                'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
+                'blockPreviewUrl' => route('admin.blocks.preview'),
+                'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
+            ] + (Route::has($previewRouteName) ? [
+                'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
+            ] : [])
+            + (Route::has($restoreRouteName) ? [
+                'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $item->id),
+            ] : []);
 
         return array_replace_recursive($data, $this->formData($this->request));
     }
@@ -1134,11 +1142,11 @@ abstract class ModuleController extends Controller
         if (!isset($back_link)) {
             if (($back_link = Session::get($this->getBackLinkSessionKey())) == null) {
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute(
-                    $this->moduleName,
-                    $this->routePrefix,
-                    'index',
-                    $params
-                );
+                        $this->moduleName,
+                        $this->routePrefix,
+                        'index',
+                        $params
+                    );
             }
         }
 
