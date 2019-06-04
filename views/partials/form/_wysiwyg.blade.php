@@ -10,6 +10,7 @@
     $toolbarOptions = $toolbarOptions ?? false;
     $inModal = $fieldsInModal ?? false;
     $default = $default ?? false;
+    $sourceBtnLabel = $sourceBtnLabel ?? 'Source code';
 
     // quill.js options
     $activeSyntax = $syntax ?? false;
@@ -43,7 +44,7 @@
 
 @if($activeSyntax)
     @pushonce('extra_css:wysiwyg')
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/{{$theme}}.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/{{$theme}}.min.css">
     @endpushonce
 @endif
 
@@ -51,18 +52,19 @@
     <a17-locale
         type="a17-wysiwyg"
         :attributes="{
+            sourceBtnLabel: '{{$sourceBtnLabel}}',
             label: '{{ $label }}',
             @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
-            @if ($note) note: '{{ $note }}', @endif
-            @if ($options) options: {!! e(json_encode($options)) !!}, @endif
-            @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
-            @if ($maxlength) maxlength: {{ $maxlength }}, @endif
-            @if ($disabled) disabled: true, @endif
-            @if ($readonly) readonly: true, @endif
-            @if ($editSource) editSource: true, @endif
-            @if ($inModal) inModal: true, @endif
-            @if ($default)
-                initialValue: '{{ $default }}',
+        @if ($note) note: '{{ $note }}', @endif
+        @if ($options) options: {!! e(json_encode($options)) !!}, @endif
+        @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
+        @if ($maxlength) maxlength: {{ $maxlength }}, @endif
+        @if ($disabled) disabled: true, @endif
+        @if ($readonly) readonly: true, @endif
+        @if ($editSource) editSource: true, @endif
+        @if ($inModal) inModal: true, @endif
+        @if ($default)
+            initialValue: '{{ $default }}',
                 hasDefaultStore: true,
             @endif
             inStore: 'value'
@@ -80,8 +82,8 @@
         @if ($readonly) readonly @endif
         @if ($editSource) :edit-source='true' @endif
         @if ($default)
-            :initial-value="'{{ $default }}'"
-            :has-default-store="true"
+        :initial-value="'{{ $default }}'"
+        :has-default-store="true"
         @endif
         @if ($inModal) :in-modal="true" @endif
         in-store="value"
@@ -89,7 +91,7 @@
 @endif
 
 @unless($renderForBlocks || $renderForModal)
-@push('vuexStore')
-    @include('twill::partials.form.utils._translatable_input_store')
-@endpush
+    @push('vuexStore')
+        @include('twill::partials.form.utils._translatable_input_store')
+    @endpush
 @endunless
