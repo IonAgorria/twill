@@ -69,18 +69,14 @@
   import { mapState } from 'vuex'
   import { NOTIFICATION, MEDIA_LIBRARY } from '@/store/mutations'
   import api from '../../store/api/media-library'
-
   import a17MediaSidebar from './MediaSidebar.vue'
   import a17Filter from '../Filter.vue'
   import a17Uploader from './Uploader.vue'
   import a17MediaGrid from './MediaGrid.vue'
   import a17ItemList from '../ItemList.vue'
   import a17Spinner from '@/components/Spinner.vue'
-
   import scrollToY from '@/utils/scrollToY.js'
-
   import FormDataAsObj from '@/utils/formDataAsObj.js'
-
   export default {
     name: 'A17Medialibrary',
     components: {
@@ -208,12 +204,9 @@
       },
       opened: function () {
         if (!this.gridLoaded) this.reloadGrid()
-
         this.listenScrollPosition()
-
         // empty selected medias (to avoid bugs when adding)
         this.selectedMedias = []
-
         // in replace mode : select the media to replace when opening
         if (this.connector && this.indexToReplace > -1) {
           const mediaInitSelect = this.selected[this.connector][this.indexToReplace]
@@ -226,7 +219,6 @@
         if (this.loading) return
         if (this.strict) return
         if (this.type === newType) return
-
         this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_TYPE, newType)
         this.submitFilter()
       },
@@ -242,18 +234,15 @@
         const alreadySelectedMedia = this.selectedMedias.filter(function (media) {
           return media.id === id
         })
-
         // not already selected
         if (alreadySelectedMedia.length === 0) {
           if (this.max === 1) this.clearSelectedMedias()
           if (this.selectedMedias.length >= this.max && this.max > 0) return
-
           if (shift && this.selectedMedias.length > 0) {
             const lastSelectedMedia = this.selectedMedias[this.selectedMedias.length - 1]
             let lastSelectedMediaIndex = this.fullMedias.findIndex((media) => media.id === lastSelectedMedia.id)
             let selectedMediaIndex = this.fullMedias.findIndex((media) => media.id === id)
             if (selectedMediaIndex === -1 && lastSelectedMediaIndex === -1) return
-
             let start = null
             let end = null
             if (lastSelectedMediaIndex < selectedMediaIndex) {
@@ -263,9 +252,7 @@
               start = selectedMediaIndex
               end = lastSelectedMediaIndex
             }
-
             const selectedMedias = this.fullMedias.slice(start, end)
-
             selectedMedias.forEach((media) => {
               if (this.selectedMedias.length >= this.max && this.max > 0) return
               const index = this.selectedMedias.findIndex((m) => m.id === media.id)
@@ -277,7 +264,6 @@
             const mediaToSelect = this.fullMedias.filter(function (media) {
               return media.id === id
             })
-
             // Add one media to the selected media
             if (mediaToSelect.length) this.selectedMedias.push(mediaToSelect[0])
           }
@@ -290,19 +276,15 @@
       },
       getFormData: function (form) {
         let data = FormDataAsObj(form)
-
         if (data) data.page = this.page
         else data = { page: this.page }
-
         data.type = this.type
-
         return data
       },
       clearFilters: function () {
         let self = this
         // reset tags
         if (this.$refs.filter) this.$refs.filter.value = null
-
         this.$nextTick(function () {
           self.submitFilter()
         })
@@ -331,17 +313,14 @@
       },
       reloadGrid: function () {
         this.loading = true
-
         const form = this.$refs.form
         const formdata = this.getFormData(form)
-
         // if (this.selected[this.connector]) {
         //   formdata.except = this.selected[this.connector].map((media) => {
         //     return media.id
         //   })
         //   console.log(formdata.except)
         // }
-
         // see api/media-library for actual ajax
         api.get(this.endpoint, formdata, (resp) => {
           // add medias here
@@ -371,15 +350,12 @@
         const el = this.$refs.list
         // when changing filters, reset the page to 1
         this.page = 1
-
         this.clearFullMedias()
         this.clearSelectedMedias()
-
         if (el.scrollTop === 0) {
           self.reloadGrid()
           return
         }
-
         scrollToY({
           el: el,
           offset: 0,
@@ -393,7 +369,6 @@
         // re-listen for scroll position
         this.$nextTick(function () {
           if (!this.gridLoaded) return
-
           const list = this.$refs.list
           if (this.gridHeight !== list.scrollHeight) {
             list.addEventListener('scroll', this.scrollToPaginate)
@@ -402,13 +377,10 @@
       },
       scrollToPaginate: function () {
         if (!this.gridLoaded) return
-
         const list = this.$refs.list
         const offset = 10
-
         if (list.scrollTop > this.lastScrollTop && list.scrollTop + list.offsetHeight > list.scrollHeight - offset) {
           list.removeEventListener('scroll', this.scrollToPaginate)
-
           if (this.maxPage > this.page) {
             this.page = this.page + 1
             this.reloadGrid()
@@ -416,7 +388,6 @@
             this.gridHeight = list.scrollHeight
           }
         }
-
         this.lastScrollTop = list.scrollTop
       },
       saveAndClose: function () {
@@ -429,9 +400,7 @@
 
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
-
   $width_sidebar: (default: 290px, small: 250px, xsmall: 200px);
-
   .medialibrary {
     display: block;
     width: 100%;
@@ -439,19 +408,16 @@
     padding: 0;
     position: relative;
   }
-
   .medialibrary__header {
     background: $color__border--light;
     border-bottom: 1px solid $color__border;
     padding: 0 20px;
-
     @include breakpoint(small-) {
       .secondarynav {
         padding-bottom: 10px;
       }
     }
   }
-
   .medialibrary__frame {
     position: absolute;
     top: 0;
@@ -461,14 +427,12 @@
     display: flex;
     flex-flow: column nowrap;
   }
-
   .medialibrary__inner {
     position: relative;
     width: 100%;
     overflow: hidden;
     flex-grow: 1;
   }
-
   .medialibrary__footer {
     position: absolute;
     right: 0;
@@ -480,25 +444,20 @@
     overflow: hidden;
     background: $color__border--light;
     border-top: 1px solid $color__border;
-
     > button {
       display: block;
       width: 100%;
     }
-
     @include breakpoint(small) {
       width: map-get($width_sidebar, small);
     }
-
     @include breakpoint(xsmall) {
       width: map-get($width_sidebar, xsmall);
     }
-
     @media screen and (max-width: 550px) {
       width: 100%;
     }
   }
-
   .medialibrary__sidebar {
     position: absolute;
     top: 0;
@@ -509,20 +468,16 @@
     z-index: 75;
     background: $color__border--light;
     overflow: auto;
-
     @include breakpoint(small) {
       width: map-get($width_sidebar, small);
     }
-
     @include breakpoint(xsmall) {
       width: map-get($width_sidebar, xsmall);
     }
-
     @media screen and (max-width: 550px) {
       display: none;
     }
   }
-
   .medialibrary__list {
     margin: 0;
     position: absolute;
@@ -533,26 +488,21 @@
     overflow: auto;
     padding: 10px;
   }
-
   .medialibrary__list-items {
     position: relative;
     display: block;
     width: 100%;
     min-height: 100%;
   }
-
   /* with a sidebar visible */
   .medialibrary__list {
     right: map-get($width_sidebar, default);
-
     @include breakpoint(small) {
       right: map-get($width_sidebar, small);
     }
-
     @include breakpoint(xsmall) {
       right: map-get($width_sidebar, xsmall);
     }
-
     @media screen and (max-width: 550px) {
       right: 0;
     }
@@ -561,24 +511,20 @@
 
 <style lang="scss">
   @import '~styles/setup/_mixins-colors-vars.scss';
-
   .medialibrary__filter-item {
     .vselect {
       min-width: 200px;
     }
   }
-
   .medialibrary__header {
     @include breakpoint(small-) {
       .filter__inner {
         flex-direction: column;
       }
-
       .filter__search {
         padding-top: 10px;
         display: flex;
       }
-
       .filter__search input {
         flex-grow: 1;
       }
