@@ -6,6 +6,13 @@
 
                 <div class="headerMobile__list">
                     @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
+                        @php
+                            $transString = 'navigation.'.strtolower($global_navigation_element['title']);
+                            $name = trans_choice($transString,2);
+                            if($name!=$transString){
+                                $global_navigation_element['title'] = $name;
+                            }
+                        @endphp
                         @can($global_navigation_element['can'] ?? 'list')
                             @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                                 <a class="s--on" href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
@@ -31,6 +38,13 @@
 
     <button class="ham @if(isset($search) && $search) ham--search @endif" data-ham-btn>
         @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
+            @php
+                $transString = 'navigation.'.strtolower($global_navigation_element['title']);
+                $name = trans_choice($transString,2);
+                if($name!=$transString){
+                    $global_navigation_element['title'] = $name;
+                }
+            @endphp
             @can($global_navigation_element['can'] ?? 'list')
                 @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                     <span class="ham__label">{{ $global_navigation_element['title'] }}</span>
