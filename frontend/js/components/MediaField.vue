@@ -466,7 +466,6 @@
           }
           this.canvas = document.createElement('canvas')
           this.ctx = this.canvas.getContext('2d')
-
           this.img.addEventListener('load', () => {
             resolve()
           }, {
@@ -474,14 +473,16 @@
             passive: true,
             capture: true
           })
-
           // in case of CORS issue or anything else
           this.img.addEventListener('error', (e) => {
             reject(e)
           })
-
           // try to load the media thumbnail
-          this.img.src = this.media.thumbnail + '&no-cache'
+          let append = '?'
+          if (this.media.thumbnail.indexOf('?') > -1) {
+            append = '&'
+          }
+          this.img.src = this.media.thumbnail + append + 'no-cache'
         })
       },
       showDefaultThumbnail: function () {
