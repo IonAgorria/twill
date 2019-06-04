@@ -8,6 +8,8 @@
     $withCaption = $withCaption ?? true;
     $btnLabel = $btnLabel ?? "Attach images";
     $itemLabel = $itemLabel ?? "image";
+    $defaultCropLabel = $defaultCropLabel ?? '';
+    $indexCropLabel = $indexCropLabel ?? '';
 @endphp
 
 <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif>
@@ -16,6 +18,8 @@
             @include('twill::partials.form.utils._field_name')
             item-label="{{$itemLabel}}"
             btn-label="{{$btnLabel}}"
+            default-crop-label="{{$defaultCropLabel}}"
+            index-crop-label="{{$indexCropLabel}}"
             type="{{ $type }}"
             :max="{{ $max }}"
             crop-context="{{ $name }}"
@@ -30,6 +34,8 @@
             btn-label="{{$btnLabel}}"
             type="{{ $type }}"
             crop-context="{{ $name }}"
+            default-crop-label="{{$defaultCropLabel}}"
+            index-crop-label="{{$indexCropLabel}}"
             @if ($required) :required="true" @endif
             @if (!$withAddInfo) :with-add-info="false" @endif
             @if (!$withVideoUrl) :with-video-url="false" @endif
