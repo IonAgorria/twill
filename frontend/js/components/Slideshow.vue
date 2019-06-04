@@ -3,10 +3,12 @@
     <draggable class="slideshow__content" v-model="slides" :options="dragOptions" v-if="slides.length">
       <transition-group name="draggable_list" tag='div'>
         <div class="slide" v-for="(slide, index) in slides" :key="index">
-            <div class="slide__handle">
-              <div class="slide__handle--drag"></div>
-            </div>
-            <a17-mediafield class="slide__content" :name="`${name}_${slide.id}`" :index="index" :mediaContext="name" :cropContext="cropContext" :hover="hoverable" :isSlide="true" :withAddInfo="withAddInfo" :withCaption="withCaption" :withVideoUrl="withVideoUrl"></a17-mediafield>
+          <div class="slide__handle">
+            <div class="slide__handle--drag"></div>
+          </div>
+          <a17-mediafield class="slide__content" :name="`${name}_${slide.id}`" :index="index" :mediaContext="name"
+                          :cropContext="cropContext" :hover="hoverable" :isSlide="true" :withAddInfo="withAddInfo"
+                          :withCaption="withCaption" :withVideoUrl="withVideoUrl"></a17-mediafield>
         </div>
       </transition-group>
     </draggable>
@@ -18,8 +20,8 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import { MEDIA_LIBRARY } from '@/store/mutations'
+  import {mapState} from 'vuex'
+  import {MEDIA_LIBRARY} from '@/store/mutations'
 
   import draggableMixin from '@/mixins/draggable'
   import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
@@ -41,9 +43,13 @@
         type: String,
         default: ''
       },
+      btnLabel: {
+        type: String,
+        default: 'Attach'
+      },
       itemLabel: {
         type: String,
-        default: 'image'
+        default: 'images'
       },
       max: {
         type: Number,
@@ -73,8 +79,7 @@
         return Math.max(0, this.max - this.slides.length)
       },
       addLabel: function () {
-        const itemNames = this.itemLabel + 's'
-        return 'Attach ' + itemNames
+        return this.btnLabel + ' ' + this.itemLabel
       },
       slides: {
         get () {
@@ -116,16 +121,16 @@
     border-radius: 2px;
     border: 1px solid $color__border;
     /*overflow-x: hidden;*/
-    background:$color__background;
+    background: $color__background;
   }
 
   .slideshow__trigger {
-    padding:10px;
-    position:relative;
+    padding: 10px;
+    position: relative;
     border-top: 1px solid $color__border--light;
 
     &:first-child {
-      border-top:0 none
+      border-top: 0 none
     }
   }
 
@@ -135,7 +140,7 @@
     position: absolute;
     bottom: 18px;
     right: 15px;
-    display:none;
+    display: none;
 
     @include breakpoint('small+') {
       display: inline-block;
@@ -169,7 +174,7 @@
     justify-content: center;
     align-items: center;
     width: 12px;
-    min-width:12px;
+    min-width: 12px;
     background-color: $color__drag_bg;
     transition: background 250ms ease;
 
@@ -192,7 +197,7 @@
 
   .slide__content {
     flex-grow: 1;
-    max-width:calc(100% - 12px);
+    max-width: calc(100% - 12px);
   }
 
 </style>
