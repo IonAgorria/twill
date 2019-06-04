@@ -21,12 +21,13 @@
             media.height }}
           </li>
           <li class="f--small media__crop-link" v-if="cropInfos" @click="openCropMedia">
-              <p class="f--small f--note hide--xsmall" v-for="cropInfo in cropInfos">
-                <span v-html="cropInfo"></span>
-              </p>
+            <p class="f--small f--note hide--xsmall" v-for="cropInfo in cropInfos">
+              <span v-html="cropInfo"></span>
+            </p>
           </li>
           <li class="f--small">
-            <a href="#" @click.prevent="metadatasInfos" v-if="withAddInfo" class="f--link-underlined--o">{{ metadatas.text }}</a>
+            <a href="#" @click.prevent="metadatasInfos" v-if="withAddInfo" class="f--link-underlined--o">{{
+              metadatas.text }}</a>
           </li>
         </ul>
 
@@ -52,7 +53,8 @@
       </div>
 
       <!--Add media button-->
-      <a17-button variant="ghost" @click="openMediaLibrary" :disabled="disabled" v-if="!hasMedia">{{ btnLabel }}</a17-button>
+      <a17-button variant="ghost" @click="openMediaLibrary" :disabled="disabled" v-if="!hasMedia">{{ btnLabel }}
+      </a17-button>
       <p class="media__note f--small" v-if="!!this.$slots.default">
         <slot/>
       </p>
@@ -60,31 +62,35 @@
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia">
         <a17-mediametadata :name='metadataName' label="Alt Text" id="altText" :media="media" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withCaption" :name='metadataName' label="Caption" id="caption" :media="media" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withVideoUrl" :name='metadataName' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata v-if="withCaption" :name='metadataName' label="Caption" id="caption" :media="media"
+                           @change="updateMetadata"/>
+        <a17-mediametadata v-if="withVideoUrl" :name='metadataName' label="Video URL (optional)" id="video"
+                           :media="media" @change="updateMetadata"/>
       </div>
     </div>
 
     <!-- Crop modal -->
-    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" title="Edit image crop" mode="medium" v-if="hasMedia && activeCrop">
-      <a17-cropper :media="media" v-on:crop-end="cropMedia" :aspectRatio="16 / 9" :context="cropContext" :key="cropperKey">
+    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" title="Edit image crop" mode="medium"
+               v-if="hasMedia && activeCrop">
+      <a17-cropper :media="media" v-on:crop-end="cropMedia" :aspectRatio="16 / 9" :context="cropContext"
+                   :key="cropperKey">
         <a17-button class="cropper__button" variant="action" @click="$refs[cropModalName].close()">Update</a17-button>
       </a17-cropper>
     </a17-modal>
-    <input :name="'medias[' + name + '][' + index + ']'" type="hidden" :value="JSON.stringify(media)" />
+    <input :name="'medias[' + name + '][' + index + ']'" type="hidden" :value="JSON.stringify(media)"/>
   </div>
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import {mapState} from 'vuex'
 
-  import { MEDIA_LIBRARY } from '@/store/mutations'
+  import {MEDIA_LIBRARY} from '@/store/mutations'
 
   import a17Cropper from '@/components/Cropper.vue'
   import a17MediaMetadata from '@/components/MediaMetadata.vue'
   import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
   import a17VueFilters from '@/utils/filters.js'
-  import { cropConversion } from '@/utils/cropper'
+  import {cropConversion} from '@/utils/cropper'
   import smartCrop from 'smartcrop'
 
   const IS_SAFARI = navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1
@@ -97,6 +103,14 @@
     },
     mixins: [mediaLibrayMixin],
     props: {
+      defaultCropLabel: {
+        type: String,
+        default: ''
+      },
+      indexCropLabel: {
+        type: String,
+        default: ''
+      },
       name: {
         type: String,
         required: true
@@ -219,7 +233,13 @@
           for (let variant in this.media.crops) {
             if (this.media.crops[variant].width + this.media.crops[variant].height) { // crop is not 0x0
               let cropInfo = ''
-              cropInfo += this.media.crops[variant].name + ' crop: '
+              if ((this.media.crops[variant].name === 'Default' || this.media.crops[variant].name === 'default') && this.defaultCropLabel !== '') {
+                cropInfo += this.defaultCropLabel + ' '
+              } else if ((this.media.crops[variant].name === 'Index' || this.media.crops[variant].name === 'index') && this.indexCropLabel !== '') {
+                cropInfo += this.indexCropLabel + ' '
+              } else {
+                cropInfo += this.media.crops[variant].name + ' crop: '
+              }
               cropInfo += this.media.crops[variant].width + '&nbsp;&times;&nbsp;' + this.media.crops[variant].height
               cropInfos.push(cropInfo)
             }
@@ -461,11 +481,7 @@
           })
 
           // try to load the media thumbnail
-          let append = '?'
-          if (this.media.thumbnail.indexOf('?') > -1) {
-            append = '&'
-          }
-          this.img.src = this.media.thumbnail + append + 'no-cache'
+          this.img.src = this.media.thumbnail + '&no-cache'
         })
       },
       showDefaultThumbnail: function () {
@@ -526,7 +542,7 @@
   .media {
     border-radius: 2px;
     border: 1px solid $color__border;
-    background:$color__background;
+    background: $color__background;
   }
 
   .media__field {
@@ -546,7 +562,7 @@
     position: absolute;
     bottom: 18px;
     right: 15px;
-    display:none;
+    display: none;
 
     @include breakpoint('small+') {
       display: inline-block;
@@ -567,25 +583,25 @@
     width: 33.33%;
     max-width: 240px;
     user-select: none;
-    position:relative;
+    position: relative;
     min-width: 100px;
 
     &:before {
       content: "";
       position: absolute;
-      display:block;
+      display: block;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      border:1px solid rgba(0,0,0,0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     img {
-      display:block;
-      max-width:100%;
-      max-height:100%;
-      margin:auto;
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto;
 
       &.media__img--landscape {
         width: 100%;
@@ -622,34 +638,34 @@
 
   // Image centered in a square option
   .media__imgFrame {
-    width:100%;
-    padding-bottom:100%;
-    position:relative;
-    overflow:hidden;
+    width: 100%;
+    padding-bottom: 100%;
+    position: relative;
+    overflow: hidden;
   }
 
   .media__imgCentered {
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     position: absolute;
     display: flex;
     background-color: $color__lighter;
     background-size: contain;
-    background-repeat:no-repeat;
-    background-position:center center;
+    background-repeat: no-repeat;
+    background-position: center center;
     transition: background-image 350ms cubic-bezier(0.795, 0.125, 0.280, 0.990), background-size 0ms 350ms;
 
     &:before {
       content: "";
       position: absolute;
-      display:block;
+      display: block;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      border:1px solid rgba(0,0,0,0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
   }
 
@@ -660,7 +676,7 @@
     left: 0;
     right: 0;
     display: block;
-    opacity:0;
+    opacity: 0;
     background-color: rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: opacity 0.3s ease;
@@ -685,7 +701,7 @@
     }
 
     .media__imgFrame:hover & {
-      opacity:1;
+      opacity: 1;
     }
   }
 
@@ -704,11 +720,11 @@
     overflow: hidden;
 
     li {
-      overflow:hidden;
+      overflow: hidden;
     }
 
     a {
-      color:$color__link;
+      color: $color__link;
     }
   }
 
@@ -716,10 +732,10 @@
     strong {
       font-weight: normal;
       color: $color__text;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      display:block;
-      margin-bottom:5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+      margin-bottom: 5px;
       // white-space: nowrap;
     }
 
@@ -742,14 +758,14 @@
   }
 
   .media__actions {
-    min-width:45px * 3;
+    min-width: 45px * 3;
 
     @media screen and (max-width: 1140px) {
       display: none !important;
     }
 
-    .s--in-editor &{
-      display: none!important;
+    .s--in-editor & {
+      display: none !important;
     }
   }
 
@@ -759,7 +775,7 @@
     }
 
     .s--in-editor & {
-      display: block!important;
+      display: block !important;
     }
   }
 
@@ -776,18 +792,18 @@
 
   /* Modal with cropper */
   .modal--cropper .cropper__button {
-    width:100%;
-    display:block;
-    margin-top:20px;
-    margin-bottom:20px;
+    width: 100%;
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 20px;
 
     @include breakpoint('small+') {
       position: absolute;
       bottom: 0;
       left: 0;
-      width:auto;
-      margin-top:20px;
-      margin-bottom:20px;
+      width: auto;
+      margin-top: 20px;
+      margin-bottom: 20px;
     }
   }
 </style>
