@@ -8,7 +8,8 @@
           </div>
           <a17-mediafield class="slide__content" :name="`${name}_${slide.id}`" :index="index" :mediaContext="name"
                           :cropContext="cropContext" :hover="hoverable" :isSlide="true" :withAddInfo="withAddInfo"
-                          :withCaption="withCaption" :withVideoUrl="withVideoUrl"></a17-mediafield>
+                          :withCaption="withCaption" :withVideoUrl="withVideoUrl" :defaultCropLabel="defaultCropLabel"
+                          :indexCropLabel="indexCropLabel"></a17-mediafield>
         </div>
       </transition-group>
     </draggable>
@@ -35,6 +36,14 @@
     },
     mixins: [draggableMixin, mediaLibrayMixin],
     props: {
+      defaultCropLabel: {
+        type: String,
+        default: ''
+      },
+      indexCropLabel: {
+        type: String,
+        default: ''
+      },
       name: {
         type: String,
         required: true
