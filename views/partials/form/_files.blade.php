@@ -9,6 +9,7 @@
 <a17-locale
     type="a17-filefield"
     :attributes="{
+        type: '{{$type}}',
         label: '{{ $label }}',
         itemLabel: '{{ $itemLabel }}',
         addLabelValue: '{{$addLabelValue}}',
@@ -28,4 +29,5 @@
         @endforeach
     @endpush
 @endunless
+
 
