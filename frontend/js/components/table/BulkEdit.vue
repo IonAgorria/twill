@@ -2,26 +2,26 @@
   <div class="bulkEditor">
     <div class="bulkEditor__inner" v-if="bulkIds.length">
       <div class="container">
-        <p class="bulkEditor__infos">{{ bulkIds.length }} item{{ bulkIds.length > 1 ? 's' : '' }} selected</p>
+        <p class="bulkEditor__infos">{{ bulkIds.length }} {{itemLabel}}{{ bulkIds.length > 1 ? 's' : '' }} {{selectedLabel}}</p>
         <div class="bulkEditor__dropdown">
           <a17-dropdown ref="bulkActionsDown" position="bottom-left" width="full" :offset="0">
-            <a17-button variant="dropdown" size="small" @click="$refs.bulkActionsDown.toggle()">Bulk actions</a17-button>
+            <a17-button variant="dropdown" size="small" @click="$refs.bulkActionsDown.toggle()">{{bulkActionsLabel}}</a17-button>
 
             <div slot="dropdown__content">
               <ul>
                 <li>
-                  <button v-if="bulkPublishable()" @click="bulkPublish">Publish</button>
-                  <button v-if="bulkPublishable(true)" @click="bulkUnpublish">Unpublish</button>
-                  <button v-if="bulkFeaturable()" @click="bulkFeature">Feature</button>
-                  <button v-if="bulkFeaturable(true)" @click="bulkUnFeature">Unfeature</button>
-                  <button v-if="bulkDeletable()" @click="bulkDelete">Delete</button>
-                  <button v-if="bulkRestorable()" @click="bulkRestore">Restore</button>
+                  <button v-if="bulkPublishable()" @click="bulkPublish">{{publishLabel}}</button>
+                  <button v-if="bulkPublishable(true)" @click="bulkUnpublish">{{unpublishLabel}}</button>
+                  <button v-if="bulkFeaturable()" @click="bulkFeature">{{featureLabel}}</button>
+                  <button v-if="bulkFeaturable(true)" @click="bulkUnFeature">{{unfeatureLabel}}</button>
+                  <button v-if="bulkDeletable()" @click="bulkDelete">{{deleteLabel}}</button>
+                  <button v-if="bulkRestorable()" @click="bulkRestore">{{restoreLabel}}</button>
                 </li>
               </ul>
             </div>
           </a17-dropdown>
         </div>
-        <a17-button variant="ghost" @click="clearBulkSelect">Clear</a17-button>
+        <a17-button variant="ghost" @click="clearBulkSelect">{{clearLabel}}</a17-button>
       </div>
     </div>
   </div>
@@ -34,6 +34,48 @@
 
   export default {
     name: 'A17BulkEditor',
+    props: {
+      itemLabel: {
+        type: String,
+        default: 'Item'
+      },
+      selectedLabel: {
+        type: String,
+        default: 'selected'
+      },
+      bulkActionsLabel: {
+        type: String,
+        default: 'Bulk actions'
+      },
+      publishLabel: {
+        type: String,
+        default: 'Publish'
+      },
+      unpublishLabel: {
+        type: String,
+        default: 'Unpublish'
+      },
+      featureLabel: {
+        type: String,
+        default: 'Feature'
+      },
+      unfeatureLabel: {
+        type: String,
+        default: 'Unfeature'
+      },
+      deleteLabel: {
+        type: String,
+        default: 'Delete'
+      },
+      restoreLabel: {
+        type: String,
+        default: 'Restore'
+      },
+      clearLabel: {
+        type: String,
+        default: 'Clear'
+      }
+    },
     computed: {
       ...mapState({
         bulkIds: state => state.datatable.bulk,
