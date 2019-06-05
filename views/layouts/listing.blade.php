@@ -9,13 +9,14 @@
     $nested = $nested ?? false;
     $bulkEdit = $bulkEdit ?? true;
     $create = $create ?? false;
+    $searchPlaceholder = __('navigation.search') == 'navigation.search' ? 'Search' : __('navigation.search');
 @endphp
 
 @section('content')
     <div class="listing">
         <div class="listing__nav">
             <div class="container" ref="form">
-                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true" v-on:clear="clearFiltersAndReloadDatas">
+                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" placeholder="{{$searchPlaceholder}}" initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true" v-on:clear="clearFiltersAndReloadDatas">
                     <a17-table-filters slot="navigation"></a17-table-filters>
 
                     @forelse($hiddenFilters as $filter)
