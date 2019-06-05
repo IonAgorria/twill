@@ -8,7 +8,7 @@
           <div class="datatable__stickyInner">
             <div class="datatable__setup">
               <a17-dropdown class="datatable__setupDropdown" v-if="hideableColumns.length" ref="setupDropdown"
-                            position="bottom-right" title="Show" :clickable="true" :offset="-10">
+                            position="bottom-right" :title="showLabel" :clickable="true" :offset="-10">
                 <button class="datatable__setupButton" @click="$refs.setupDropdown.toggle()">
                   <span v-svg symbol="preferences"></span></button>
                 <div slot="dropdown__content">
@@ -40,14 +40,32 @@
             <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="dragOptions"
                        :draggable="true">
               <template v-for="(row, index) in rows">
-                <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
+                <a17-tablerow
+                  :permalink-label="permalinkLabel"
+                  :edit-label="editLabel"
+                  :publish-label="publishLabel"
+                  :unpublish-label="unpublishLabel"
+                  :feature-label="featureLabel"
+                  :unfeature-label="unfeatureLabel"
+                  :restore-label="restoreLabel"
+                  :delete-label="deleteLabel"
+                  :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
               </template>
             </draggable>
           </template>
 
           <tbody v-else>
           <template v-for="(row, index) in rows">
-            <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
+            <a17-tablerow
+              :permalink-label="permalinkLabel"
+              :edit-label="editLabel"
+              :publish-label="publishLabel"
+              :unpublish-label="unpublishLabel"
+              :feature-label="featureLabel"
+              :unfeature-label="unfeatureLabel"
+              :restore-label="restoreLabel"
+              :delete-label="deleteLabel"
+              :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
           </template>
           </tbody>
         </a17-table>
@@ -57,12 +75,12 @@
             <h4>{{ emptyMessage }}</h4>
           </div>
         </template>
-        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page"
+        <a17-paginate :of-label="ofLabel" :per-page-label="perPageLabel" v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page"
                       :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]"
                       @changePage="updatePage" @changeOffset="updateOffset"/>
       </div>
     </div>
-    <a17-spinner v-if="loading">Loading&hellip;</a17-spinner>
+    <a17-spinner v-if="loading">{{loadingLabel}}&hellip;</a17-spinner>
   </div>
 </template>
 
@@ -82,6 +100,7 @@
   import { DatatableMixin, DraggableMixin } from '@/mixins'
 
   export default {
+
     name: 'A17Datatable',
     components: {
       'a17-table': a17Table,
@@ -90,6 +109,56 @@
       'a17-paginate': a17Paginate,
       'a17-spinner': a17Spinner,
       draggable
+    },
+    props: {
+      loadingLabel: {
+        type: String,
+        default: 'Loading'
+      },
+      perPageLabel: {
+        type: String,
+        default: 'Rows per page:'
+      },
+      ofLabel: {
+        type: String,
+        default: 'of'
+      },
+      showLabel: {
+        type: String,
+        default: 'Show'
+      },
+      permalinkLabel: {
+        type: String,
+        default: 'View permalink'
+      },
+      editLabel: {
+        type: String,
+        default: 'Edit'
+      },
+      publishLabel: {
+        type: String,
+        default: 'Publish'
+      },
+      unpublishLabel: {
+        type: String,
+        default: 'Unpublish'
+      },
+      featureLabel: {
+        type: String,
+        default: 'Feature'
+      },
+      unfeatureLabel: {
+        type: String,
+        default: 'Unfeature'
+      },
+      restoreLabel: {
+        type: String,
+        default: 'Restore'
+      },
+      deleteLabel: {
+        type: String,
+        default: 'Delete'
+      }
     },
     mixins: [DatatableMixin, DraggableMixin],
     data: function () {
