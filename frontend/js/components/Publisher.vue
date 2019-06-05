@@ -1,18 +1,18 @@
 <template>
   <div class="publisher__wrapper">
-      <a17-switcher title="Status" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
-      <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">Review status</a17-reviewaccordion>
-      <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
-      <a17-checkboxaccordion  v-if="languages && showLanguages&& languages.length > 1" :options="languages" name="active_languages" :value="publishedLanguagesValues" :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">Languages</a17-checkboxaccordion>
-      <a17-pubaccordion :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">Published on</a17-pubaccordion>
-      <a17-revaccordion v-if="revisions.length" :open="openStates['A17Revisions']" @open="openCloseAccordion" :revisions="revisions">Revisions</a17-revaccordion>
-      <a17-parentaccordion v-if="parents.length" :open="openStates['A17Parents']" @open="openCloseAccordion" :parents="parents" :value="parentId">Parent page</a17-parentaccordion>
-      <div class="publisher__item" v-if="revisions.length">
-        <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">Preview changes</span></a>
-      </div>
-      <div class="publisher__item publisher__item--btns">
-        <a17-multibutton @button-clicked="buttonClicked" :options="submitOptions" type="submit"></a17-multibutton>
-      </div>
+    <a17-switcher :title=statusLabel name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
+    <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">{{reviewLabel}}</a17-reviewaccordion>
+    <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">{{visibilityLabel}}</a17-radioaccordion>
+    <a17-checkboxaccordion  v-if="languages && showLanguages&& languages.length > 1" :options="languages" name="active_languages" :value="publishedLanguagesValues" :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">{{languagesLabel}}</a17-checkboxaccordion>
+    <a17-pubaccordion :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">{{publishedonLabel}}</a17-pubaccordion>
+    <a17-revaccordion v-if="revisions.length" :open="openStates['A17Revisions']" @open="openCloseAccordion" :revisions="revisions">{{revisionsLabel}}</a17-revaccordion>
+    <a17-parentaccordion v-if="parents.length" :open="openStates['A17Parents']" @open="openCloseAccordion" :parents="parents" :value="parentId">{{parentpLabel}}</a17-parentaccordion>
+    <div class="publisher__item" v-if="revisions.length">
+      <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">{{previewLabel}}</span></a>
+    </div>
+    <div class="publisher__item publisher__item--btns">
+      <a17-multibutton @button-clicked="buttonClicked" :options="submitOptions" type="submit"></a17-multibutton>
+    </div>
   </div>
   <!-- <div class="publisher__trash">
     <a href="#" @click.prevent="openMoveToTrashModal" class="f--small f--note f--underlined">Move to Trash</a>
@@ -48,6 +48,38 @@
       'a17-multibutton': a17MultiButton
     },
     props: {
+      statusLabel: {
+        type: String,
+        default: 'Status'
+      },
+      reviewLabel: {
+        type: String,
+        default: 'Review status'
+      },
+      visibilityLabel: {
+        type: String,
+        default: 'Visibility'
+      },
+      languagesLabel: {
+        type: String,
+        default: 'Languages'
+      },
+      publishedonLabel: {
+        type: String,
+        default: 'Published on'
+      },
+      revisionsLabel: {
+        type: String,
+        default: 'Revisions'
+      },
+      parentpLabel: {
+        type: String,
+        default: 'Parent page'
+      },
+      previewLabel: {
+        type: String,
+        default: 'Preview changes'
+      },
       showLanguages: {
         type: Boolean,
         default: true
