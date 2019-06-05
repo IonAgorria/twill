@@ -11,23 +11,23 @@
     <div slot="dropdown__content">
       <a v-if="row.hasOwnProperty('permalink')"
          :href="row['permalink']"
-         target="_blank">View permalink</a>
+         target="_blank">{{permalinkLabel}}</a>
       <a v-if="row.hasOwnProperty('edit') && !row.hasOwnProperty('deleted') && row['edit']"
          :href="editUrl"
-         @click="preventEditInPlace($event)">Edit</a>
+         @click="preventEditInPlace($event)">{{editLabel}}</a>
       <a v-if="row.hasOwnProperty('published') && !row.hasOwnProperty('deleted')"
          href="#"
          @click.prevent="update('published')"
-      >{{ row['published'] ? 'Unpublish' : 'Publish' }}</a>
+      >{{ row['published'] ? unpublishLabel : publishLabel }}</a>
       <a v-if="row.hasOwnProperty('featured') && !row.hasOwnProperty('deleted')"
          href="#"
-         @click.prevent="update('featured')">{{ row['featured'] ? 'Unfeature' : 'Feature' }}</a>
+         @click.prevent="update('featured')">{{ row['featured'] ? unfeatureLabel : featureLabel }}</a>
       <a v-if="row.hasOwnProperty('deleted')"
          href="#"
-         @click.prevent="restoreRow">Restore</a>
+         @click.prevent="restoreRow">{{restoreLabel}}</a>
       <a v-else-if="row.delete"
          href="#"
-         @click.prevent="deleteRow">Delete</a>
+         @click.prevent="deleteRow">{{deleteLabel}}</a>
     </div>
   </a17-dropdown>
 </template>
@@ -38,6 +38,40 @@
   export default {
     name: 'TableCellActions',
     mixins: [TableCellMixin],
+    props: {
+      permalinkLabel: {
+        type: String,
+        default: 'View permalink'
+      },
+      editLabel: {
+        type: String,
+        default: 'Edit'
+      },
+      publishLabel: {
+        type: String,
+        default: 'Publish'
+      },
+      unpublishLabel: {
+        type: String,
+        default: 'Unpublish'
+      },
+      featureLabel: {
+        type: String,
+        default: 'Feature'
+      },
+      unfeatureLabel: {
+        type: String,
+        default: 'Unfeature'
+      },
+      restoreLabel: {
+        type: String,
+        default: 'Restore'
+      },
+      deleteLabel: {
+        type: String,
+        default: 'Delete'
+      }
+    },
     methods: {
       update: function (colName) {
         this.$emit('update', {row: this.row, col: colName})
