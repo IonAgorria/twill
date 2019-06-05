@@ -1,6 +1,6 @@
 <template>
   <div class="paginate">
-    <p class="paginate__offset  f--small">Rows per page:
+    <p class="paginate__offset  f--small">{{perPageLabel}}
       <a17-dropdown ref="paginateDropdown" position="bottom-right">
         <button @click="$refs.paginateDropdown.toggle()" class="paginate__button">{{ newOffset }}</button>
         <div slot="dropdown__content">
@@ -9,7 +9,7 @@
       </a17-dropdown>
     </p>
     <div class="paginate__pages" v-if="max > 1">
-      <p class="paginate__current f--small"><input class="form__input paginate__input" type="number" v-model="newPageFormat" maxlength="4" @blur="formatPage" /> of {{ max }}</p>
+      <p class="paginate__current f--small"><input class="form__input paginate__input" type="number" v-model="newPageFormat" maxlength="4" @blur="formatPage" /> {{ofLabel}}  {{ max }}</p>
       <button type="button" :disabled="value <= min"  class="paginate__prev" @click="previousPage"><span v-svg symbol="pagination_left"></span></button>
       <button type="button" :disabled="value >= max"  class="paginate__next" @click="nextPage"><span v-svg symbol="pagination_right"></span></button>
     </div>
@@ -20,6 +20,14 @@
   export default {
     name: 'A17Paginate',
     props: {
+      ofLabel: {
+        type: String,
+        default: 'of'
+      },
+      perPageLabel: {
+        type: String,
+        default: 'Rows per page:'
+      },
       value: {
         type: Number,
         required: true
