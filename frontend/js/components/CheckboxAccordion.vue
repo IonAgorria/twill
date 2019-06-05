@@ -29,6 +29,10 @@
         type: String,
         default: ''
       },
+      closedLabel: {
+        type: String,
+        default: 'Live'
+      },
       options: {
         default: function () { return [] }
       }
@@ -45,7 +49,7 @@
     },
     computed: {
       currentLabel: function () {
-        return this.currentValue.length + ' Live'
+        return this.currentValue.length + ' ' + this.closedLabel
       }
     },
     methods: {
