@@ -11,7 +11,15 @@
     </td>
     <td class="tablecell tablecell--spacer">&nbsp;</td>
     <td class="tablecell tablecell--sticky">
-      <a17-table-cell-actions v-bind="currentComponentProps()" @editInPlace="editInPlace" @update="tableCellUpdate" @restoreRow=" restoreRow" @deleteRow="deleteRow"/>
+      <a17-table-cell-actions :permalink-label="permalinkLabel"
+                              :edit-label="editLabel"
+                              :publish-label="publishLabel"
+                              :unpublish-label="unpublishLabel"
+                              :feature-label="featureLabel"
+                              :unfeature-label="unfeatureLabel"
+                              :restore-label="restoreLabel"
+                              :delete-label="deleteLabel"
+                              v-bind="currentComponentProps()" @editInPlace="editInPlace" @update="tableCellUpdate" @restoreRow=" restoreRow" @deleteRow="deleteRow"/>
     </td>
   </tr>
 </template>
@@ -38,6 +46,38 @@
       rowType: {
         type: String,
         default: ''
+      },
+      permalinkLabel: {
+        type: String,
+        default: 'View permalink'
+      },
+      editLabel: {
+        type: String,
+        default: 'Edit'
+      },
+      publishLabel: {
+        type: String,
+        default: 'Publish'
+      },
+      unpublishLabel: {
+        type: String,
+        default: 'Unpublish'
+      },
+      featureLabel: {
+        type: String,
+        default: 'Feature'
+      },
+      unfeatureLabel: {
+        type: String,
+        default: 'Unfeature'
+      },
+      restoreLabel: {
+        type: String,
+        default: 'Restore'
+      },
+      deleteLabel: {
+        type: String,
+        default: 'Delete'
       }
     },
     computed: {
