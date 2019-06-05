@@ -1,193 +1,190 @@
-<template>
-  <div class="paginate">
-    <p class="paginate__offset  f--small">{{perPageLabel}}
-      <a17-dropdown ref="paginateDropdown" position="bottom-right">
-        <button @click="$refs.paginateDropdown.toggle()" class="paginate__button">{{ newOffset }}</button>
-        <div slot="dropdown__content">
-          <button type="button" v-for="availableOffset in availableOffsets" :key="availableOffset" :class="{ 'dropdown__active' : availableOffset === newOffset }" @click="changeOffset(availableOffset)">{{ availableOffset }}</button>
+@extends('twill::layouts.main')
+
+@section('appTypeClass', 'body--listing')
+
+@php
+    $translate = $translate ?? false;
+    $translateTitle = $translateTitle ?? $translate ?? false;
+    $reorder = $reorder ?? false;
+    $nested = $nested ?? false;
+    $bulkEdit = $bulkEdit ?? true;
+    $create = $create ?? false;
+    $searchPlaceholder = __('navigation.search') == 'navigation.search' ? 'Search' : __('navigation.search');
+    $deleteModalTitle = __('navigation.deleteitem')=='navigation.deleteitem'?'Delete item': __('navigation.deleteitem');
+    $toTrash = __('navigation.totrash')=='navigation.totrash'?'Move to trash': __('navigation.totrash');
+    $toTrashInfo = __('navigation.softdelinfo')=='navigation.softdelinfo'?'The item won\'t be deleted but moved to trash.': __('navigation.softdelinfo');
+    $deleteLabel = __('navigation.delete')=='navigation.delete'?'Delete': __('navigation.delete');
+    $cancelLabel = __('navigation.cancel')=='navigation.cancel'?'Cancel': __('navigation.cancel');
+    $emptyMessage = __('navigation.noitem')=='navigation.noitem'?'There is no item here yet.': __('navigation.noitem');
+    $addNewLabel = __('navigation.addnew')=='navigation.addnew'?'Add new': __('navigation.addnew');
+    $permalinkLabel  = __('navigation.viewpermalink')=='navigation.viewpermalink'?'View permalink': __('navigation.viewpermalink');
+    $editLabel = __('navigation.edit')=='navigation.edit'?'Edit': __('navigation.edit');
+    $publishLabel = __('navigation.publish')=='navigation.publish'?'Publish': __('navigation.publish');
+    $unpublishLabel = __('navigation.unpublish')=='navigation.unpublish'?'Unpublish': __('navigation.unpublish');
+    $featureLabel = __('navigation.feature')=='navigation.feature'?'Feature': __('navigation.feature');
+    $unfeatureLabel = __('navigation.unfeature')=='navigation.unfeature'?'Unfeature': __('navigation.unfeature');
+    $restoreLabel = __('navigation.restore')=='navigation.restore'?'Restore': __('navigation.restore');
+    $deleteLabel = __('navigation.delete')=='navigation.delete'?'Delete': __('navigation.delete');
+    $showLabel = __('navigation.show')=='navigation.show'?'Show': __('navigation.show');
+    $ofLabel = __('navigation.of')=='navigation.of'?'of': __('navigation.of');
+    $perPageLabel = __('navigation.perpage')=='navigation.perpage'?'Rows per page:': __('navigation.perpage');
+    $loadingLabel = __('navigation.loading')=='navigation.loading'?'Loading': __('navigation.loading');
+    $itemLabel = __('navigation.item')=='navigation.item'?'Item':__('navigation.item');
+    $selectedLabel = __('navigation.selected')=='navigation.selected'?'selected':__('navigation.selected');
+    $bulkActionsLabel = __('navigation.bulkactions')=='navigation.bulkactions'?'Bulk actions':__('navigation.bulkactions');
+    $clearLabel = __('navigation.clearselection')=='navigation.clearselection'?'Clear':__('navigation.clearselection');
+@endphp
+
+@section('content')
+    <div class="listing">
+        <div class="listing__nav">
+            <div class="container" ref="form">
+                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" placeholder="{{$searchPlaceholder}}"
+                            initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true"
+                            v-on:clear="clearFiltersAndReloadDatas">
+                    <a17-table-filters slot="navigation"></a17-table-filters>
+                    @forelse($hiddenFilters as $filter)
+                        @if ($loop->first)
+                            <div slot="hidden-filters">
+                                @endif
+
+                                @if (isset(${$filter.'List'}))
+                                    <a17-vselect
+                                        name="{{ $filter }}"
+                                        :options="{{ json_encode(method_exists(${$filter.'List'}, 'map') ? ${$filter.'List'}->map(function($label, $value) {
+                                return [
+                                    'value' => $value,
+                                    'label' => $label
+                                ];
+                            })->values()->toArray() : ${$filter.'List'}) }}"
+                                        placeholder="All {{ strtolower(str_plural($filter)) }}"
+                                        ref="filterDropdown[{{ $loop->index }}]"
+                                    ></a17-vselect>
+                                @endif
+
+                                @if ($loop->last)
+                            </div>
+                        @endif
+                    @empty
+                        @hasSection('hiddenFilters')
+                            <div slot="hidden-filters">
+                                @yield('hiddenFilters')
+                            </div>
+                        @endif
+                    @endforelse
+
+                    @if($create)
+                        <div slot="additional-actions">
+                            <a17-button variant="validate" size="small"
+                                        v-on:click="create">{{$addNewLabel}}</a17-button>
+                        </div>
+                    @endif
+                </a17-filter>
+            </div>
+            @if($bulkEdit)
+                <a17-bulk
+                    item-label="{{$itemLabel}}"
+                    selected-label="{{$selectedLabel}}"
+                    bulk-actions-label="{{$bulkActionsLabel}}"
+                    publish-label="{{$publishLabel}}"
+                    unpublish-label="{{$unpublishLabel}}"
+                    feature-label="{{$featureLabel}}"
+                    unfeature-label="{{$unfeatureLabel}}"
+                    delete-label="{{$deleteLabel}}"
+                    restore-label="{{$restoreLabel}}"
+                    clear-label="{{$clearLabel}}"
+                ></a17-bulk>
+            @endif
         </div>
-      </a17-dropdown>
-    </p>
-    <div class="paginate__pages" v-if="max > 1">
-      <p class="paginate__current f--small"><input class="form__input paginate__input" type="number" v-model="newPageFormat" maxlength="4" @blur="formatPage" /> {{ofLabel}}  {{ max }}</p>
-      <button type="button" :disabled="value <= min"  class="paginate__prev" @click="previousPage"><span v-svg symbol="pagination_left"></span></button>
-      <button type="button" :disabled="value >= max"  class="paginate__next" @click="nextPage"><span v-svg symbol="pagination_right"></span></button>
+        @if($nested)
+            <a17-nested-datatable
+                :draggable="{{ $reorder ? 'true' : 'false' }}"
+                :max-depth="{{ $nestedDepth ?? '1' }}"
+                :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
+                empty-message={{$emptyMessage}}>
+            </a17-nested-datatable>
+        @else
+            <a17-datatable
+                loading-label="{{$loadingLabel}}"
+                per-page-label="{{$perPageLabel}}"
+                of-label="{{$ofLabel}}"
+                show-label="{{$showLabel}}"
+                permalink-label="{{$permalinkLabel}}"
+                edit-label="{{$editLabel}}"
+                publish-label="{{$publishLabel}}"
+                unpublish-label="{{$unpublishLabel}}"
+                feature-label="{{$featureLabel}}"
+                unfeature-label="{{$unfeatureLabel}}"
+                restore-label="{{$restoreLabel}}"
+                delete-label="{{$deleteLabel}}"
+                draggable="{{ $reorder ? 'true' : 'false' }}"
+                bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
+                empty-message={{$emptyMessage}}>
+            </a17-datatable>
+        @endif
+
+        @if($create)
+            <a17-modal-create
+                ref="editionModal"
+                form-create="{{ $storeUrl }}"
+                v-on:reload="reloadDatas"
+                @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
+                @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
+            >
+                <a17-langmanager></a17-langmanager>
+                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
+            </a17-modal-create>
+        @endif
+
+        <a17-dialog ref="warningDeleteRow" modal-title="{{$deleteModalTitle}}" confirm-label="{{$deleteLabel}}"
+                    cancel-label="{{$cancelLabel}}">
+            <p class="modal--tiny-title"><strong>{{$toTrash}}</strong></p>
+            <p>{{$toTrashInfo}}</p>
+        </a17-dialog>
     </div>
-  </div>
-</template>
+@stop
 
-<script>
-  export default {
-    name: 'A17Paginate',
-    props: {
-      ofLabel: {
-        type: String,
-        default: 'of'
-      },
-      perPageLabel: {
-        type: String,
-        default: 'Rows per page:'
-      },
-      value: {
-        type: Number,
-        required: true
-      },
-      offset: {
-        type: Number,
-        default: 60
-      },
-      availableOffsets: {
-        type: Array,
-        default: function () { return [] }
-      },
-      min: {
-        type: Number,
-        default: 1
-      },
-      max: {
-        type: Number,
-        required: true
-      }
-    },
-    data () {
-      return {
-        newOffset: this.offset
-      }
-    },
-    computed: {
-      newPageFormat: {
-        get: function () {
-          return this.value
-        },
-        set: function (value) {
-          return parseInt(value)
-        }
-      }
-    },
-    methods: {
-      formatPage: function (event) {
-        let newValue = event.target.value
-        newValue = newValue !== '' ? parseInt(newValue) : 1
-
-        if (newValue > this.max) newValue = this.max
-        if (newValue < 1) newValue = 1
-
-        event.target.value = newValue
-        if (newValue !== this.value) this.$emit('changePage', newValue)
-      },
-      changeOffset: function (offset) {
-        this.newOffset = offset
-
-        this.$emit('changeOffset', parseInt(this.newOffset))
-      },
-      previousPage: function () {
-        this.$emit('changePage', parseInt(this.value - 1))
-      },
-      nextPage: function () {
-        this.$emit('changePage', parseInt(this.value + 1))
-      }
-    }
-  }
-</script>
-
-<style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
-
-  .paginate {
-    // border-top:1px solid $color__border--light;
-    color:$color__text--light;
-    padding:27px 20px 25px 20px;
-    display:flex;
-    flex-flow: row wrap;
-  }
-
-  // .paginate__pages {
-  // }
-
-  .paginate__current {
-    display:inline-block;
-    height:28px;
-    line-height: 28px;
-  }
-
-  .paginate__offset {
-    display:block;
-    flex-grow:1;
-    height:28px;
-    line-height: 28px;
-
-    .dropdown {
-      display:inline-block;
-    }
-  }
-
-  .paginate__button {
-    @include btn-reset;
-    color:$color__text--light;
-
-    &::after {
-      content:'';
-      display:inline-block;
-      width: 0;
-      height: 0;
-      margin-top: -1px;
-      border-width: 4px 4px 0;
-      border-style: solid;
-      border-color: $color__icons transparent transparent;
-      position: relative;
-      top: -3px;
-      margin-left: 5px;
+@section('initialStore')
+    window.CMS_URLS = {
+    index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
+    publish: '{{ $publishUrl }}',
+    bulkPublish: '{{ $bulkPublishUrl }}',
+    restore: '{{ $restoreUrl }}',
+    bulkRestore: '{{ $bulkRestoreUrl }}',
+    reorder: '{{ $reorderUrl }}',
+    feature: '{{ $featureUrl }}',
+    bulkFeature: '{{ $bulkFeatureUrl }}',
+    bulkDelete: '{{ $bulkDeleteUrl }}'
     }
 
-    &:focus,
-    &:hover {
-      color:$color__text;
-
-      &::after {
-        border-color: $color__text transparent transparent;
-      }
-    }
-  }
-
-  .paginate__input {
-    display:inline-block;
-    padding:0 10px;
-    height:28px;
-    line-height: 28px;
-    width:auto;
-    max-width:(4*12px);
-    font-size:13px;
-    margin-right:6px;
-  }
-
-  .paginate__prev,
-  .paginate__next {
-    @include btn-reset;
-    background: transparent;
-    color:$color__icons;
-    height:28px;
-    line-height: 28px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-left:15px;
-
-    .icon {
-      display:block;
+    window.STORE.form = {
+    fields: []
     }
 
-    &:focus,
-    &:hover {
-      color:$color__text;
+    window.STORE.datatable = {
+    data: {!! json_encode($tableData) !!},
+    columns: {!! json_encode($tableColumns) !!},
+    navigation: {!! json_encode($tableMainFilters) !!},
+    filter: { status: '{{ $filters['status'] ?? $defaultFilterSlug ?? 'all' }}' },
+    page: {{ request('page') ?? 1 }},
+    maxPage: {{ $maxPage ?? 1 }},
+    defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
+    offset: {{ request('offset') ?? $offset ?? 60 }},
+    defaultOffset: {{ $defaultOffset ?? 60 }},
+    sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? '') }}',
+    sortDir: '{{ request('sortDir') ?? 'asc' }}',
+    baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',
+    localStorageKey: '{{ isset($currentUser) ? $currentUser->id : 0 }}__{{ $moduleName ?? Route::currentRouteName() }}'
     }
 
-    &:disabled {
-      opacity:0.5;
-      pointer-events: none;
+    @if ($create && ($openCreate ?? false))
+        window.openCreate = {!! json_encode($openCreate) !!}
+    @endif
+@stop
 
-      &:focus,
-      &:hover {
-        color:$color__icons;
-      }
-    }
-  }
-</style>
+@push('extra_js')
+    <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
+    <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
+    <script src="{{ mix('/assets/admin/js/main-listing.js') }}"></script>
+@endpush
+
