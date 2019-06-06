@@ -1,17 +1,22 @@
 <template>
   <div class="mediasidebar">
-    <a17-mediasidebar-upload v-if="mediasLoading.length"/>
+    <a17-mediasidebar-upload
+      :uploading-label="uploadingLabel"
+      :file-label="fileLabel"
+      :cancel-label="cancelLabel"
+    },
+      v-if="mediasLoading.length"/>
     <template v-else>
       <div class="mediasidebar__inner" :class="containerClasses">
-        <p v-if="!hasMedia" class="f--note">No file selected</p>
-        <p v-if="hasMultipleMedias" class="mediasidebar__info">{{ medias.length }} files selected <a href="#" @click.prevent="clear" >Clear</a></p>
+        <p v-if="!hasMedia" class="f--note">{{noFileLabel}}</p>
+        <p v-if="hasMultipleMedias" class="mediasidebar__info">{{ medias.length }}{{selectedLabel}}<a href="#" @click.prevent="clear" >{{clearLabel}}</a></p>
 
         <template v-if="hasSingleMedia">
           <img v-if="isImage" :src="firstMedia.thumbnail" class="mediasidebar__img" :alt="firstMedia.original" />
           <p class="mediasidebar__name">{{ firstMedia.name }}</p>
           <ul class="mediasidebar__metadatas">
-            <li class="f--small" v-if="firstMedia.size" >File size: {{ firstMedia.size | uppercase }}</li>
-            <li class="f--small" v-if="isImage && (firstMedia.width + firstMedia.height)">Dimensions: {{ firstMedia.width }} &times; {{ firstMedia.height }}</li>
+            <li class="f--small" v-if="firstMedia.size" >{{fileSizeLabel}}: {{ firstMedia.size | uppercase }}</li>
+            <li class="f--small" v-if="isImage && (firstMedia.width + firstMedia.height)">{{dimensionsLabel}}: {{ firstMedia.width }} &times; {{ firstMedia.height }}</li>
           </ul>
         </template>
 
@@ -25,15 +30,15 @@
 
       <form v-if="hasMedia" ref="form" class="mediasidebar__inner mediasidebar__form" @submit="submit">
         <span class="mediasidebar__loader" v-if="loading"><span class="loader loader--small"><span></span></span></span>
-        <a17-vselect v-if="!fieldsRemovedFromBulkEditing.includes('tags')" label="Tags" :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="type.tagsEndpoint" @change="save" maxHeight="175px" />
-        <span v-if="extraMetadatas.length && isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes('tags')" class="f--tiny f--note f--underlined" @click="removeFieldFromBulkEditing('tags') ">Remove from bulk edit</span>
+        <a17-vselect v-if="!fieldsRemovedFromBulkEditing.includes('tags')" :label="tagsLabel" :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" :emptyText="tagsEmptyLabel" :taggable="true" :pushTags="true" size="small" :endpoint="type.tagsEndpoint" @change="save" maxHeight="175px" />
+        <span v-if="extraMetadatas.length && isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes('tags')" class="f--tiny f--note f--underlined" @click="removeFieldFromBulkEditing('tags') ">{{removeFromBulkLabel}}</span>
         <template v-if="hasMultipleMedias">
           <input type="hidden" name="ids" :value="mediasIds" />
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
-          <a17-textfield v-if="isImage" label="Alt text" name="alt_text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" @change="save" />
-          <a17-textfield v-if="isImage" type="textarea" :rows="1" size="small" label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur" @change="save" />
+          <a17-textfield v-if="isImage" :label="altTextLabel" name="alt_text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" @change="save" />
+          <a17-textfield v-if="isImage" type="textarea" :rows="1" size="small" :label="captionLabel" name="caption" :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur" @change="save" />
           <template v-for="field in singleOnlyMetadatas">
             <a17-textfield v-bind:key="field.name" v-if="isImage && (field.type == 'text' || !field.type)" :label="field.label" :name="field.name" size="small" :initialValue="firstMedia.metadatas.default[field.name]" type="textarea" :rows="1" @focus="focus" @blur="blur" @change="save" />
             <div class="mediasidebar__checkbox" v-if="isImage && (field.type == 'checkbox')" >
@@ -46,17 +51,17 @@
           <div class="mediasidebar__checkbox" v-if="isImage && (field.type == 'checkbox') && ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia)">
             <a17-checkbox v-bind:key="field.name" :label="field.label" :name="field.name" :initialValue="hasMultipleMedias ? sharedMetadata(field.name) : firstMedia.metadatas.default[field.name]" :value="1" @change="blur" />
           </div>
-          <span v-if="isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)" class="f--tiny f--note f--underlined" @click="removeFieldFromBulkEditing(field.name) ">Remove from bulk edit</span>
+          <span v-if="isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)" class="f--tiny f--note f--underlined" @click="removeFieldFromBulkEditing(field.name) ">{{removeFromBulkLabel}}</span>
         </template>
       </form>
     </template>
 
-    <a17-modal class="modal--tiny modal--form modal--withintro" ref="warningDelete" title="Warning Delete">
-      <p class="modal--tiny-title"><strong>Are you sure ?</strong></p>
+    <a17-modal class="modal--tiny modal--form modal--withintro" ref="warningDelete" :title="warningDelete">
+      <p class="modal--tiny-title"><strong>{{areYouSure}}</strong></p>
       <p>{{ warningDeleteMessage }}</p>
       <a17-inputframe>
-        <a17-button variant="validate" @click="deleteSelectedMedias">Delete ({{ mediasIdsToDelete.length }})</a17-button>
-        <a17-button variant="aslink" @click="$refs.warningDelete.close()"><span>Cancel</span></a17-button>
+        <a17-button variant="validate" @click="deleteSelectedMedias">{{deleteLabel}} ({{ mediasIdsToDelete.length }})</a17-button>
+        <a17-button variant="aslink" @click="$refs.warningDelete.close()"><span>{{cancelLabel}}</span></a17-button>
       </a17-inputframe>
     </a17-modal>
   </div>
@@ -77,6 +82,70 @@
       'a17-mediasidebar-upload': a17MediaSidebarUpload
     },
     props: {
+      uploadingLabel: {
+        type: String,
+        default: 'Uploading'
+      },
+      fileLabel: {
+        type: String,
+        default: 'file'
+      },
+      cancelLabel: {
+        type: String,
+        default: 'Cancel'
+      },
+      noFileLabel: {
+        type: String,
+        default: 'No file selected'
+      },
+      selectedLabel: {
+        type: String,
+        default: ' files selected '
+      },
+      clearLabel: {
+        type: String,
+        default: 'Clear'
+      },
+      fileSizeLabel: {
+        type: String,
+        default: 'File size'
+      },
+      dimensionsLabel: {
+        type: String,
+        default: 'Dimensions'
+      },
+      tagsLabel: {
+        type: String,
+        default: 'Tags'
+      },
+      tagsEmptyLabel: {
+        type: String,
+        default: 'Sorry, no tags found.'
+      },
+      removeFromBulkLabel: {
+        type: String,
+        default: 'Remove from bulk edit'
+      },
+      warningDelete: {
+        type: String,
+        default: 'Warning Delete'
+      },
+      areYouSure: {
+        type: String,
+        default: 'Are you sure ?'
+      },
+      altTextLabel: {
+        type: String,
+        default: 'Alt text'
+      },
+      captionLabel: {
+        type: String,
+        default: 'Caption'
+      },
+      deleteLabel: {
+        type: String,
+        default: 'Delete'
+      },
       medias: {
         default: function () { return [] }
       },
