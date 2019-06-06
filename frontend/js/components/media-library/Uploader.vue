@@ -1,8 +1,8 @@
 <template>
   <div class="uploader">
     <div class="uploader__dropzone" ref="uploaderDropzone">
-      <div class="button" ref="uploaderBrowseButton">Add new</div>
-      <div class="uploader__dropzone--desktop">or drop new files here</div>
+      <div class="button" ref="uploaderBrowseButton">{{addLabel}}</div>
+      <div class="uploader__dropzone--desktop">{{dropLabel}}</div>
     </div>
   </div>
 </template>
@@ -13,10 +13,37 @@
   import FineUploaderS3 from 'fine-uploader-wrappers/s3'
   import FineUploaderTraditional from 'fine-uploader-wrappers/traditional'
   import sanitizeFilename from '@/utils/sanitizeFilename.js'
-
   export default {
     name: 'A17Uploader',
     props: {
+      retryFailTooManyItemsErrorMsg: {
+        type: String,
+        default: 'Retry failed - you have reached your file limit.'
+      },
+      sizeErrorMsg: {
+        type: String,
+        default: ' is too large, maximum file size is '
+      },
+      tooManyItemsErrorMsgA: {
+        type: String,
+        default: 'Too many items '
+      },
+      tooManyItemsErrorMsgB: {
+        type: String,
+        default: ' would be uploaded. Item limit is '
+      },
+      typeErrorMsg: {
+        type: String,
+        default: ' has an invalid extension. Valid extension(s): '
+      },
+      addLabel: {
+        type: String,
+        default: 'Add new'
+      },
+      dropLabel: {
+        type: String,
+        default: 'or drop new files here'
+      },
       type: {
         type: Object,
         required: true
@@ -65,10 +92,10 @@
           },
           messages: {
             // Todo: need to translate this in uploaderConfig
-            retryFailTooManyItemsError: 'Retry failed - you have reached your file limit.',
-            sizeError: '{file} is too large, maximum file size is {sizeLimit}.',
-            tooManyItemsError: 'Too many items ({netItems}) would be uploaded. Item limit is {itemLimit}.',
-            typeError: '{file} has an invalid extension. Valid extension(s): {extensions}.'
+            retryFailTooManyItemsError: this.retryFailTooManyItemsErrorMsg,
+            sizeError: '{file}' + this.sizeErrorMsg + '{sizeLimit}.',
+            tooManyItemsError: this.tooManyItemsErrorMsgA + '({netItems})' + this.tooManyItemsErrorMsgB + '{itemLimit}.',
+            typeError: '{file}' + this.typeErrorMsg + '{extensions}.'
           }
         }
 
