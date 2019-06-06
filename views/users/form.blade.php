@@ -38,36 +38,37 @@
         @if(!$isSuperAdmin && ($item->id !== $currentUser->id))
             @formField('select', [
             'name' => "role",
-            'label' => "{{$roleLabel}}",
+            'label' => $roleLabel,
             'options' => $roleList,
-            'placeholder' => '{{$rolePlaceHolder}}'
+            'placeholder' => $rolePlaceHolder
             ])
         @endif
     @endcan
 
     @if(config('twill.enabled.users-image'))
         @formField('medias', [
+        'btnLabel' => __('fields.attachoneimg'),
         'name' => 'profile',
-        'label' => '{{$profileImgLabel}}'
+        'label' => $profileImgLabel
         ])
     @endif
     @if(config('twill.enabled.users-description'))
         @formField('input', [
         'name' => 'title',
-        'label' => '{{$titleLabel}}',
+        'label' => $titleLabel,
         'maxlength' => 250
         ])
         @formField('input', [
         'name' => 'description',
         'rows' => 4,
         'type' => 'textarea',
-        'label' => '{{$descriptionLabel}}'
+        'label' => $descriptionLabel
         ])
     @endif
     @if($with2faSettings ?? false)
         @formField('checkbox', [
         'name' => 'google_2fa_enabled',
-        'label' => '{{$twoFactorLabel}}',
+        'label' => $twoFactorLabel,
         ])
 
         @unless($item->google_2fa_enabled ?? false)
@@ -82,7 +83,7 @@
                 </div>
                 @formField('input', [
                 'name' => 'verify-code',
-                'label' => '{{$oneTimePassLabel}}',
+                'label' => $oneTimePassLabel,
                 ])
             @endcomponent
         @else
@@ -92,9 +93,8 @@
             ])
                 @formField('input', [
                 'name' => 'verify-code',
-                'label' => '{{$oneTimePassLabel}}',
-                'note' => '{{$twoFADisableLabel}}'
-
+                'label' => $oneTimePassLabel,
+                'note' => $twoFADisableLabel
                 ])
             @endcomponent
         @endunless
@@ -103,60 +103,60 @@
 
 @push('vuexStore')
     window.STORE.publication.submitOptions = {
-    draft: [
-    {
-    name: 'save',
-    text: '{{$updateDisabledLabel}}'
-    },
-    {
-    name: 'save-close',
-    text: '{{$updateDisabledCloseLabel}}'
-    },
-    {
-    name: 'save-new',
-    text: '{{$updateDisabledCreateLabel}}'
-    },
-    {
-    name: 'cancel',
-    text: '{{$cancelLabel}}'
-    }
-    ],
-    live: [
-    {
-    name: 'publish',
-    text: '{{$enableUserLabel}}'
-    },
-    {
-    name: 'publish-close',
-    text: '{{$enableUserCloseLabel}}'
-    },
-    {
-    name: 'publish-new',
-    text: '{{$enableUserCreateLabel}}'
-    },
-    {
-    name: 'cancel',
-    text: '{{$cancelLabel}}'
-    }
-    ],
-    update: [
-    {
-    name: 'update',
-    text: '{{$updateLabel}}'
-    },
-    {
-    name: 'update-close',
-    text: '{{$updateCloseLabel}}'
-    },
-    {
-    name: 'update-new',
-    text: '{{$updateNewLabel}}'
-    },
-    {
-    name: 'cancel',
-    text: '{{$cancelLabel}}'
-    }
-    ]
+        draft: [
+            {
+            name: 'save',
+            text: '{{$updateDisabledLabel}}'
+            },
+            {
+            name: 'save-close',
+            text: '{{$updateDisabledCloseLabel}}'
+            },
+            {
+            name: 'save-new',
+            text: '{{$updateDisabledCreateLabel}}'
+            },
+            {
+            name: 'cancel',
+            text: '{{$cancelLabel}}'
+            }
+        ],
+        live: [
+            {
+            name: 'publish',
+            text: '{{$enableUserLabel}}'
+            },
+            {
+            name: 'publish-close',
+            text: '{{$enableUserCloseLabel}}'
+            },
+            {
+            name: 'publish-new',
+            text: '{{$enableUserCreateLabel}}'
+            },
+            {
+            name: 'cancel',
+            text: '{{$cancelLabel}}'
+            }
+        ],
+        update: [
+            {
+            name: 'update',
+            text: '{{$updateLabel}}'
+            },
+            {
+            name: 'update-close',
+            text: '{{$updateCloseLabel}}'
+            },
+            {
+            name: 'update-new',
+            text: '{{$updateNewLabel}}'
+            },
+            {
+            name: 'cancel',
+            text: '{{$cancelLabel}}'
+            }
+        ]
     }
     @if ($item->id == $currentUser->id)
         window.STORE.publication.withPublicationToggle = false
