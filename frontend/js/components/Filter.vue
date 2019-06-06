@@ -5,7 +5,7 @@
 
       <div class="filter__search">
         <input type="search" class="form__input form__input--small" name="search" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
-        <a17-button class="filter__toggle" variant="ghost" @click="toggleFilter" v-if="withHiddenFilters" :aria-expanded="opened ?  'true' : 'false'" >Filter <span v-svg symbol="dropdown_module"></span></a17-button>
+        <a17-button class="filter__toggle" variant="ghost" @click="toggleFilter" v-if="withHiddenFilters" :aria-expanded="opened ?  'true' : 'false'" >{{filterLabel}} <span v-svg symbol="dropdown_module"></span></a17-button>
         <slot name="additional-actions"></slot>
       </div>
     </div>
@@ -13,8 +13,8 @@
       <div class="filter__more" v-show="opened" v-if="withHiddenFilters" :aria-hidden="!opened ? true : null">
         <div class="filter__moreInner" >
           <slot name="hidden-filters"></slot>
-          <a17-button variant="ghost" type="submit">Apply</a17-button>
-          <a17-button v-if="clearOption" variant="ghost" type="button" @click="clear">Clear</a17-button>
+          <a17-button variant="ghost" type="submit">{{applyLabel}}</a17-button>
+          <a17-button v-if="clearOption" variant="ghost" type="button" @click="clear">{{clearLabel}}</a17-button>
         </div>
       </div>
     </transition>
@@ -34,6 +34,18 @@
       placeholder: {
         type: String,
         default: 'Search'
+      },
+      filterLabel: {
+        type: String,
+        default: 'Filter'
+      },
+      applyLabel: {
+        type: String,
+        default: 'Apply'
+      },
+      clearLabel: {
+        type: String,
+        default: 'Clear'
       },
       closed: {
         type: Boolean,
