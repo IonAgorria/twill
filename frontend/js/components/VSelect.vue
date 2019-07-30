@@ -26,7 +26,14 @@
       </div>
     </a17-inputframe>
     <template v-if="addNew">
-      <a17-modal-add ref="addModal" :name="name" :form-create="addNew" :modal-title="'Add new ' + label">
+      <a17-modal-add ref="addModal"
+                     :name="name"
+                     :form-create="addNew"
+                     :modal-title="addNewModalTitle + label"
+                     :addedContent="addedContent"
+                     :addedContentVariant="addedContentVariant"
+                     :addingError="addingError"
+                     :addingErrorVariant="addingErrorVariant">
         <slot name="addModal"></slot>
       </a17-modal-add>
     </template>
@@ -110,6 +117,26 @@
       maxHeight: { // max-height of the dropdown menu
         type: String,
         default: '400px'
+      },
+      addNewModalTitle: {
+        type: String,
+        default: 'Add new '
+      },
+      addedContent: {
+        type: String,
+        default: 'Your content has been added'
+      },
+      addedContentVariant: {
+        type: String,
+        default: 'success'
+      },
+      addingError: {
+        type: String,
+        default: 'Your content can not be added, please retry'
+      },
+      addingErrorVariant: {
+        type: String,
+        default: 'error'
       }
     },
     components: {
