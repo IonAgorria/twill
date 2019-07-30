@@ -1,8 +1,15 @@
 @extends('twill::layouts.main')
 
 @section('appTypeClass', 'body--listing')
-
+@if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
+@if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
 @php
+    if($customPublishedLabel ?? true){
+        $customPublishedLabel = __('navigation.live') == 'navigation.live' ? 'Live' : __('navigation.live');;
+    }
+    if($customDraftLabel ?? true){
+        $customDraftLabel = __('navigation.todraft') == 'navigation.todraft' ? 'Draft' : __('navigation.todraft');;
+    }
     $translate = $translate ?? false;
     $translateTitle = $translateTitle ?? $translate ?? false;
     $reorder = $reorder ?? false;
@@ -16,7 +23,7 @@
     $deleteLabel = __('navigation.delete')=='navigation.delete'?'Delete': __('navigation.delete');
     $cancelLabel = __('navigation.cancel')=='navigation.cancel'?'Cancel': __('navigation.cancel');
     $emptyMessage = __('navigation.noitem')=='navigation.noitem'?'There is no item here yet.': __('navigation.noitem');
-    $addNewLabel = __('navigation.addnew')=='navigation.addnew'?'Add new': __('navigation.addnew');
+    $addNewLabel = __('navigation.addnew')=='navigation.addnew'?'Add new ': __('navigation.addnew');
     $permalinkLabel  = __('navigation.viewpermalink')=='navigation.viewpermalink'?'View permalink': __('navigation.viewpermalink');
     $editLabel = __('navigation.edit')=='navigation.edit'?'Edit': __('navigation.edit');
     $publishLabel = __('navigation.publish')=='navigation.publish'?'Publish': __('navigation.publish');
@@ -33,6 +40,14 @@
     $selectedLabel = __('navigation.selected')=='navigation.selected'?'selected':__('navigation.selected');
     $bulkActionsLabel = __('navigation.bulkactions')=='navigation.bulkactions'?'Bulk actions':__('navigation.bulkactions');
     $clearLabel = __('navigation.clearselection')=='navigation.clearselection'?'Clear':__('navigation.clearselection');
+    $failedSubmissionLabel = __('navigation.failedsubmission')=='navigation.failedsubmission'?'Your submission could not be validated, please fix and retry':__('navigation.failedsubmission');
+    $addedContentLabel = __('navigation.addedcontent')=='navigation.addedcontent'?'Your content has been added':__('navigation.addedcontent');
+    $addedContentVariantLabel = __('navigation.success')=='navigation.success'?'success':__('navigation.success');
+    $addingErrorLabel = __('navigation.addingerror')=='navigation.addingerror'?'Your content can not be added, please retry':__('navigation.addingerror');
+    $addingErrorVariantLabel = __('navigation.error')=='navigation.error'?'error':__('navigation.error');
+    $updateLabel = __('navigation.update')=='navigation.update'?'Update':__('navigation.update');
+    $createLabel = __('publisher.create')=='publisher.create'?'Create':__('publisher.create'); ;
+    $createAddAnotherLabel = __('publisher.createaddanother')=='publisher.createaddanother'?'Create and add another':__('publisher.createaddanother');;
 @endphp
 
 @section('content')
@@ -51,6 +66,11 @@
                                 @if (isset(${$filter.'List'}))
                                     <a17-vselect
                                         name="{{ $filter }}"
+                                        :addNewModalTitle="{{$addNewLabel}}"
+                                        :addedContent="{{$addedContentLabel}}"
+                                        :addedContentVariant="{{$addedContentVariantLabel}}"
+                                        :addingError="{{$addingErrorLabel}}"
+                                        :addingErrorVariant="{{$addingErrorVariantLabel}}"
                                         :options="{{ json_encode(method_exists(${$filter.'List'}, 'map') ? ${$filter.'List'}->map(function($label, $value) {
                                 return [
                                     'value' => $value,
@@ -130,6 +150,12 @@
                 v-on:reload="reloadDatas"
                 @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
                 @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
+                add-new-text="{{$addNewLabel}}"
+                update-text="{{$updateLabel}}"
+                error-message="{{$failedSubmissionLabel}}"
+                error-variant="{{$addingErrorVariantLabel}}"
+                create-label="{{$createLabel}}"
+                create-add-another-label="{{$createAddAnotherLabel}}"
             >
                 <a17-langmanager></a17-langmanager>
                 @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
