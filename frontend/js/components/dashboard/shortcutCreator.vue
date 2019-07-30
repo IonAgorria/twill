@@ -5,7 +5,7 @@
         <div class="shortcutCreator__create">
           <a17-dropdown class="shortcutCreator__dropdown" ref="createNewDropdown" position="bottom-right" width="full" :offset="0">
             <a17-button type="button" class="shortcutCreator__btn" variant="action" @click="$refs.createNewDropdown.toggle()">
-              Create new
+              {{createNewLabel}}
               <span class="shortcutCreator__trigger"><span v-svg symbol="dropdown_module"></span></span>
             </a17-button>
             <div slot="dropdown__content">
@@ -30,6 +30,10 @@
   export default {
     name: 'A17ShortcutCreator',
     props: {
+      createNewLabel: {
+        type: String,
+        default: 'Create new'
+      },
       entities: {
         type: Array,
         default: function () {
