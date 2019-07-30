@@ -4,8 +4,7 @@
       :uploading-label="uploadingLabel"
       :file-label="fileLabel"
       :cancel-label="cancelLabel"
-    },
-      v-if="mediasLoading.length"/>
+      v-if="mediasLoading.length"/>//TODO fixthis
     <template v-else>
       <div class="mediasidebar__inner" :class="containerClasses">
         <p v-if="!hasMedia" class="f--note">{{noFileLabel}}</p>
