@@ -2,7 +2,7 @@
   <a17-modal ref="modal" class="modal--form" :title="modalTitle" :forceClose="true">
     <form :action="actionForm" @submit.prevent="submit">
       <slot></slot>
-      <a17-modal-validation :mode="mode" :is-disable="createMode" :active-publish-state="withPublicationToggle" :is-publish="published" published-name="published" :textEnabled="publishedLabel" :textDisabled="draftLabel"></a17-modal-validation>
+      <a17-modal-validation :mode="mode" :is-disable="createMode" :active-publish-state="withPublicationToggle" :is-publish="published" published-name="published" :text-enabled="publishedLabel" :text-disabled="draftLabel" :update-label="updateText" :create-label="createLabel" :create-add-another-label="createAddAnotherLabel"></a17-modal-validation>
     </form>
   </a17-modal>
 </template>
@@ -27,6 +27,30 @@
       draftLabel: {
         type: String,
         default: 'Draft'
+      },
+      addNewText: {
+        type: String,
+        default: 'Add new'
+      },
+      updateText: {
+        type: String,
+        default: 'Update'
+      },
+      errorMessage: {
+        type: String,
+        default: 'Your submission could not be validated, please fix and retry'
+      },
+      errorVariant: {
+        type: String,
+        default: 'error'
+      },
+      createLabel: {
+        type: String,
+        default: 'Create'
+      },
+      createAddAnotherLabel: {
+        type: String,
+        default: 'Create and add another'
       }
     },
     components: {
@@ -40,7 +64,7 @@
         return this.createMode ? this.formCreate : this.action
       },
       modalTitle: function () {
-        return this.createMode ? 'Add new' : 'Update'
+        return this.createMode ? this.addNewText : this.updateText
       },
       published: function () {
         return !this.createMode && !!this.fieldValueByName('published')
@@ -88,8 +112,8 @@
             })
           }, (errorResponse) => {
             self.$store.commit(NOTIFICATION.SET_NOTIF, {
-              message: 'Your submission could not be validated, please fix and retry',
-              variant: 'error'
+              message: this.errorMessage,
+              variant: this.errorVariant
             })
           })
         })
