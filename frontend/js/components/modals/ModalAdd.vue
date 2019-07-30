@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import { NOTIFICATION, FORM } from '@/store/mutations'
+  import {NOTIFICATION, FORM} from '@/store/mutations'
   import ACTIONS from '@/store/actions'
   import a17ModalValidationButtons from './ModalValidationButtons.vue'
 
@@ -26,6 +26,22 @@
       formCreate: {
         type: String,
         default: '#'
+      },
+      addedContent: {
+        type: String,
+        default: 'Your content has been added'
+      },
+      addedContentVariant: {
+        type: String,
+        default: 'success'
+      },
+      addingError: {
+        type: String,
+        default: 'Your content can not be added, please retry'
+      },
+      addingErrorVariant: {
+        type: String,
+        default: 'error'
       }
     },
     components: {
@@ -52,16 +68,16 @@
 
             self.$nextTick(function () {
               self.$store.commit(NOTIFICATION.SET_NOTIF, {
-                message: 'Your content has been added',
-                variant: 'success'
+                message: this.addedContent,
+                variant: this.addedContentVariant
               })
 
               if (submitMode === 'create-another' && self.$refs.modal) self.$refs.modal.open()
             })
           }, (errorResponse) => {
             self.$store.commit(NOTIFICATION.SET_NOTIF, {
-              message: 'Your content can not be added, please retry',
-              variant: 'error'
+              message: this.addingError,
+              variant: this.addingErrorVariant
             })
           })
         })
