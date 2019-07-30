@@ -20,6 +20,8 @@
     $liveLangLabel = __('publisher.livelang') === 'publisher.livelang' ? 'Live' : __('publisher.livelang');
     $languageKeysCSV = __('publisher.langkeys') === 'publisher.langkeys' ? 'en' : __('publisher.langkeys');
     $languageValuesCSV = __('publisher.langvalues') === 'publisher.langvalues' ? 'English' : __('publisher.langvalues');
+    $updateItemLabel = __('publisher.updateitem') === 'publisher.updateitem' ? 'Update Item' : __('publisher.updateitem');
+    $updateLabel = __('navigation.update') === 'navigation.update' ? 'Update' : __('navigation.update');
 @endphp
 
 @section('content')
@@ -37,6 +39,8 @@
                     name="{{ $titleFormKey }}"
                     :editable-title="{{ json_encode($editableTitle ?? true) }}"
                     custom-title="{{ $customTitle ?? '' }}"
+                    modal-title="{{$updateItemLabel}}"
+                    update-label="{{$updateLabel}}"
                     slot="title"
                     @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
                 >
