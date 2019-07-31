@@ -2,7 +2,13 @@
   <a17-modal ref="modal" class="modal--form" :title="modalTitle" :forceClose="true">
     <form :action="actionForm" @submit.prevent="submit">
       <slot></slot>
-      <a17-modal-validation :mode="mode" :is-disable="createMode" :active-publish-state="withPublicationToggle" :is-publish="published" published-name="published" :text-enabled="publishedLabel" :text-disabled="draftLabel" :update-label="updateText" :create-label="createLabel" :create-add-another-label="createAddAnotherLabel"></a17-modal-validation>
+      <a17-modal-validation
+        :mode="mode"
+        :is-disable="createMode"
+        :active-publish-state="withPublicationToggle"
+        :is-publish="published"
+        published-name="published"
+        :text-enabled="publishedLabel" :text-disabled="draftLabel" :update-label="updateText" :create-label="createLabel" :create-add-another-label="createAddAnotherLabel"></a17-modal-validation>
     </form>
   </a17-modal>
 </template>
