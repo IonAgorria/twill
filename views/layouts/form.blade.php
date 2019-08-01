@@ -25,6 +25,9 @@
     $editInLabel = __('publisher.editin') === 'publisher.editin' ? 'Edit in' : __('publisher.editin');
     $startDatePlaceholder = __('publisher.startdate') === 'publisher.startdate' ? 'Start Date' : __('publisher.startdate');
     $endDatePlaceholder = __('publisher.enddate') === 'publisher.enddate' ? 'End Date' : __('publisher.enddate');
+    $textScheduled = __('publisher.scheduled') === 'publisher.scheduled' ? 'Scheduled' : __('publisher.scheduled');
+    $textExpired = __('publisher.expired') === 'publisher.expired' ? 'Expired' : __('publisher.expired');
+    $textImmediate = __('publisher.immediate') === 'publisher.immediate' ? 'Immediate' : __('publisher.immediate');
 @endphp
 
 @section('content')
@@ -82,6 +85,9 @@
                                            live-label="{{$liveLangLabel}}"
                                            start-date-placeholder="{{$startDatePlaceholder}}"
                                            end-date-placeholder="{{$endDatePlaceholder}}"
+                                           text-scheduled="{{$textScheduled}}"
+                                           text-immediate="{{$textImmediate}}"
+                                           text-expired="{{$textExpired}}"
                                            :show-languages="{{ json_encode($controlLanguagesPublication) }}"></a17-publisher>
                             <a17-page-nav
                                 placeholder="Go to page"
