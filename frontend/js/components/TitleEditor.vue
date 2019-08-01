@@ -16,7 +16,7 @@
         <a17-langmanager></a17-langmanager>
         <form action="#" @submit.prevent="update" ref="modalForm">
           <slot name="modal-form"></slot>
-          <a17-modal-validation :mode="mode" @disable="lockModal"></a17-modal-validation>
+          <a17-modal-validation :mode="mode" @disable="lockModal" :update-label="updateLabel"></a17-modal-validation>
         </form>
       </a17-modal>
     </div>
@@ -59,6 +59,10 @@
       customTitle: {
         type: String,
         default: ''
+      },
+      updateLabel: {
+        type: String,
+        default: 'Update'
       }
     },
     data: function () {
