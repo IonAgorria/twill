@@ -14,7 +14,10 @@
                            name="active_languages" :value="publishedLanguagesValues"
                            :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">{{languagesLabel}}
     </a17-checkboxaccordion>
-    <a17-pubaccordion :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">
+    <a17-pubaccordion
+      :start-date-placeholder="startDatePlaceholder"
+      :end-date-placeholder="endDatePlaceholder"
+      :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">
       {{publishedonLabel}}
     </a17-pubaccordion>
     <a17-revaccordion v-if="revisions.length" :open="openStates['A17Revisions']" @open="openCloseAccordion"
@@ -112,6 +115,14 @@
       showLanguages: {
         type: Boolean,
         default: true
+      },
+      startDatePlaceholder: {
+        type: String,
+        default: 'Start Date'
+      },
+      endDatePlaceholder: {
+        type: String,
+        default: 'End Date'
       }
     },
     data: function () {
