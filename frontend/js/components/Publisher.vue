@@ -1,7 +1,10 @@
 <template>
   <div class="publisher__wrapper">
     <a17-switcher :title=statusLabel name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled"
-                  :textDisabled="textDisabled"></a17-switcher>
+                  :textDisabled="textDisabled"
+                  :textScheduled="textScheduled"
+                  :textExpired="textExpired"
+    ></a17-switcher>
     <a17-reviewaccordion v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process"
                          :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']"
                          @open="openCloseAccordion">{{reviewLabel}}
@@ -17,6 +20,7 @@
     <a17-pubaccordion
       :start-date-placeholder="startDatePlaceholder"
       :end-date-placeholder="endDatePlaceholder"
+      :default-start-date="textImmediate"
       :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">
       {{publishedonLabel}}
     </a17-pubaccordion>
@@ -123,6 +127,18 @@
       endDatePlaceholder: {
         type: String,
         default: 'End Date'
+      },
+      textExpired: {
+        type: String,
+        default: 'Expired'
+      },
+      textScheduled: {
+        type: String,
+        default: 'Scheduled'
+      },
+      textImmediate: {
+        type: String,
+        default: 'Immediate'
       }
     },
     data: function () {
