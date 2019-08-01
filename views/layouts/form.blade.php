@@ -22,6 +22,9 @@
     $languageValuesCSV = __('publisher.langvalues') === 'publisher.langvalues' ? 'English' : __('publisher.langvalues');
     $updateItemLabel = __('publisher.updateitem') === 'publisher.updateitem' ? 'Update Item' : __('publisher.updateitem');
     $updateLabel = __('navigation.update') === 'navigation.update' ? 'Update' : __('navigation.update');
+    $editInLabel = __('publisher.editin') === 'publisher.editin' ? 'Edit in' : __('publisher.editin');
+    $startDatePlaceholder = __('publisher.startdate') === 'publisher.startdate' ? 'Start Date' : __('publisher.startdate');
+    $endDatePlaceholder = __('publisher.enddate') === 'publisher.enddate' ? 'End Date' : __('publisher.enddate');
 @endphp
 
 @section('content')
@@ -51,6 +54,7 @@
                 </a17-title-editor>
                 <div slot="actions">
                     <a17-langswitcher
+                        edit-in-label="{{$editInLabel}}"
                         :all-published="{{ json_encode(!$controlLanguagesPublication) }}"></a17-langswitcher>
                     <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)">
                         <span v-svg symbol="editor"></span>Editor
@@ -76,6 +80,8 @@
                                            language-values="{{$languageValuesCSV}}"
                                            language-keys="{{$languageKeysCSV}}"
                                            live-label="{{$liveLangLabel}}"
+                                           start-date-placeholder="{{$startDatePlaceholder}}"
+                                           end-date-placeholder="{{$endDatePlaceholder}}"
                                            :show-languages="{{ json_encode($controlLanguagesPublication) }}"></a17-publisher>
                             <a17-page-nav
                                 placeholder="Go to page"
