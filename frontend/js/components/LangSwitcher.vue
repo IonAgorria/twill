@@ -2,7 +2,7 @@
   <div class="language"
        :class="languageClass"
        v-if="languages.length > 1">
-    <span class="language__label f--small" v-if="!inModal">Edit in</span>
+    <span class="language__label f--small" v-if="!inModal">{{editInLabel}}</span>
     <span class="language__toolbar">
       <button type="button" class="language__button" :key="language.value" v-for="language in languages"
               :class="{ 'selected': language.value === localeValue.value, 'published': allPublished ? true : language.published }"
@@ -31,6 +31,10 @@
       allPublished: {
         type: Boolean,
         default: false
+      },
+      editInLabel: {
+        type: String,
+        default: 'Edit in'
       }
     },
     computed: {
