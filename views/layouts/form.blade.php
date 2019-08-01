@@ -41,6 +41,7 @@
                     custom-title="{{ $customTitle ?? '' }}"
                     modal-title="{{$updateItemLabel}}"
                     update-label="{{$updateLabel}}"
+                    live-lang-label="{{$liveLangLabel}}"
                     slot="title"
                     @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
                 >
