@@ -12,6 +12,7 @@
     }
     $translate = $translate ?? false;
     $translateTitle = $translateTitle ?? $translate ?? false;
+    $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $reorder = $reorder ?? false;
     $nested = $nested ?? false;
     $bulkEdit = $bulkEdit ?? true;
@@ -47,7 +48,10 @@
     $addingErrorVariantLabel = __('navigation.error')=='navigation.error'?'error':__('navigation.error');
     $updateLabel = __('navigation.update')=='navigation.update'?'Update':__('navigation.update');
     $createLabel = __('publisher.create')=='publisher.create'?'Create':__('publisher.create'); ;
-    $createAddAnotherLabel = __('publisher.createaddanother')=='publisher.createaddanother'?'Create and add another':__('publisher.createaddanother');;
+    $createAddAnotherLabel = __('publisher.createaddanother')=='publisher.createaddanother'?'Create and add another':__('publisher.createaddanother');
+    $liveLangLabel = __('publisher.livelang') === 'publisher.livelang' ? 'Live' : __('publisher.livelang');
+    $languageKeysCSV = __('publisher.langkeys') === 'publisher.langkeys' ? 'en' : __('publisher.langkeys');
+    $languageValuesCSV = __('publisher.langvalues') === 'publisher.langvalues' ? 'English' : __('publisher.langvalues');
 @endphp
 
 @section('content')
@@ -157,7 +161,9 @@
                 create-label="{{$createLabel}}"
                 create-add-another-label="{{$createAddAnotherLabel}}"
             >
-                <a17-langmanager></a17-langmanager>
+                <a17-langmanager live-lang-label="{{$liveLangLabel}}"
+                                 language-values="{{$languageValuesCSV}}"
+                                 language-keys="{{$languageKeysCSV}}"></a17-langmanager>
                 @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
             </a17-modal-create>
         @endif
