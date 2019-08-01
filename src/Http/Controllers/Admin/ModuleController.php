@@ -744,7 +744,7 @@ abstract class ModuleController extends Controller
 
             array_push($tableColumns, [
                 'name' => $columnName,
-                'label' => $column['title'],
+                'label' => __($column['title']) == $column['title'] ? $column['title'] : __($column['title']),
                 'visible' => $visibleColumns ? in_array($columnName, $visibleColumns) : ($column['visible'] ?? true),
                 'optional' => $column['optional'] ?? true,
                 'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false),
