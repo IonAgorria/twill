@@ -10,7 +10,7 @@
       <button class="languageManager__button"
               type="button"
               @click="$refs.languageManagerDropdown.toggle()">
-        {{currentValue.length }} Live <span v-svg symbol="dropdown_module"></span>
+        {{currentValue.length }} {{liveLangLabel}} <span v-svg symbol="dropdown_module"></span>
       </button>
       <div slot="dropdown__content" class="languageManager__dropdown-content">
         <a17-checkboxgroup name="langManager"
@@ -40,6 +40,18 @@
       'a17-langswitcher': a17Langswitcher
     },
     props: {
+      liveLangLabel: {
+        type: String,
+        default: 'Live'
+      },
+      languageValues: {
+        type: String,
+        default: ''
+      },
+      languageKeys: {
+        type: String,
+        default: ''
+      },
       value: {
         default: function () { return [] }
       }
@@ -48,16 +60,15 @@
       currentValue: {
         get () {
           const values = []
-
           if (this.publishedLanguages.length) {
             this.publishedLanguages.forEach(function (item) {
               values.push(item.value)
             })
           }
-
           return values
         }
       },
+
       ...mapState({
         languages: state => state.language.all
       }),
@@ -65,7 +76,26 @@
         'publishedLanguages'
       ])
     },
+    mounted () {
+      this.getLanguageLabels()
+    },
     methods: {
+      getLanguageLabels: function () {
+        for (let i = 0; i < this.languages.length; i++) {
+          let item = this.languages[i]
+          if (this.languageKeys !== '' && this.languageValues !== '') {
+            let langKeys = this.languageKeys.split(',')
+            let langValues = this.languageValues.split(',')
+            if (langKeys.length === langValues.length) {
+              for (let j = 0; j < langKeys.length; j++) {
+                if (langKeys[i] === item.value) {
+                  item.label = langValues[i]
+                }
+              }
+            }
+          }
+        }
+      },
       changeValue: function (newValue) {
         this.$store.commit(LANGUAGE.PUBLISH_LANG, newValue)
       }
