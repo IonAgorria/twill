@@ -13,7 +13,7 @@
 
       <!-- Editing modal -->
       <a17-modal class="modal--form" ref="editModal" :title="modalTitle" :forceLock="disabled">
-        <a17-langmanager></a17-langmanager>
+        <a17-langmanager :live-lang-label="liveLangLabel" ></a17-langmanager>
         <form action="#" @submit.prevent="update" ref="modalForm">
           <slot name="modal-form"></slot>
           <a17-modal-validation :mode="mode" @disable="lockModal" :update-label="updateLabel"></a17-modal-validation>
@@ -63,6 +63,10 @@
       updateLabel: {
         type: String,
         default: 'Update'
+      },
+      liveLangLabel: {
+        type: String,
+        default: 'Live'
       }
     },
     data: function () {
