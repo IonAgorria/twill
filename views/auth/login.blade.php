@@ -15,7 +15,7 @@
                for="password">{{__('auth.password')=='auth.password'?'Password':__('auth.password')}}</label>
         <a href="{{ route('admin.password.reset.link') }}" class="login__help f--small"
            tabindex="5"><span>{{__('auth.forgotpassword')=='auth.forgotpassword'?'Forgot password':__('auth.forgotpassword')}}</span></a>
-        <input type="password" name="password" id="password" class="login__input" required tabindex="2"/>
+        <input type="password" autocomplete="off" name="password" id="password" class="login__input" required tabindex="2"/>
     </fieldset>
 
     <input class="login__button" type="submit" value="{{__('auth.login')=='auth.login'?'Login':__('auth.login')}}"
