@@ -52,6 +52,11 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
+        $result = event('twill.user.afterlogin', $user, true);
+        if ($result) {
+            return $result;
+        }
+
         if ($user->google_2fa_secret && $user->google_2fa_enabled) {
             $this->guard()->logout();
 
